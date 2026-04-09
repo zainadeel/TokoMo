@@ -39,80 +39,79 @@
 
 
   /* ─────────────────────────────────────────────────────────────────────────
-     BACKWARD-COMPATIBLE ALIASES — map old naming to new Figma tokens.
-     These keep existing component code working without changes.
-     ───────────────────────────────────────────────────────────────────────── */
-
-  /* Old speed names → new Figma duration tokens */
-  --effect-animation-speed-instant: var(--effect-animation-duration-instant);
-  --effect-animation-speed-fast:    var(--effect-animation-duration-short-2);   /* 100ms */
-  --effect-animation-speed-medium:  var(--effect-animation-duration-short-3);   /* 200ms */
-  --effect-animation-speed-slow:    var(--effect-animation-duration-medium-1);  /* 300ms */
-  --effect-animation-speed-slower:  var(--effect-animation-duration-medium-3);  /* 500ms */
-  --effect-animation-speed-slowest: var(--effect-animation-duration-long-2);    /* 1000ms */
-
-  /* Old easing names → new Figma easing tokens */
-  --effect-animation-easing-cubic:  var(--effect-animation-easing-ease-in-out);
-  --effect-animation-easing-spring: var(--effect-animation-easing-ease-in-out-back);
-
-  /* Old delay names → new Figma delay tokens */
-  --effect-motion-delay-instant: var(--effect-animation-delay-instant);
-  --effect-motion-delay-little:  var(--effect-animation-duration-short-2);   /* 100ms (reuse duration) */
-  --effect-motion-delay-medium:  var(--effect-animation-delay-short-1);      /* 200ms */
-  --effect-motion-delay-more:    var(--effect-animation-delay-medium-1);     /* 500ms */
-  --effect-motion-delay-alot:    var(--effect-animation-delay-medium-3);     /* 1000ms */
-  --effect-motion-delay-most:    var(--effect-animation-delay-long-1);       /* 2000ms */
-  --effect-motion-delay-toomuch: var(--effect-animation-delay-long-2);       /* 4000ms */
-
-  /* ─────────────────────────────────────────────────────────────────────────
      HAND-AUTHORED — Motion presets and transition shorthands.
      These compose duration + easing together for convenience in components.
      Not representable as Figma variables (they combine multiple primitives).
      ───────────────────────────────────────────────────────────────────────── */
 
-  /* Motion presets — use like: transition: color var(--effect-motion-fast); */
-  --effect-motion-instant: var(--effect-animation-speed-instant) var(--effect-animation-easing-cubic);
-  --effect-motion-fast:    var(--effect-animation-speed-fast)    var(--effect-animation-easing-cubic);
-  --effect-motion-medium:  var(--effect-animation-speed-medium)  var(--effect-animation-easing-cubic);
-  --effect-motion-slow:    var(--effect-animation-speed-slow)    var(--effect-animation-easing-cubic);
-  --effect-motion-slower:  var(--effect-animation-speed-slower)  var(--effect-animation-easing-cubic);
-  --effect-motion-slowest: var(--effect-animation-speed-slowest) var(--effect-animation-easing-cubic);
+  /* Motion presets — use like: transition: color var(--effect-motion-short-2);
+     Duration names match Figma: short-1/2/3, medium-1/2/3, long-1/2/3        */
+  --effect-motion-instant:  var(--effect-animation-duration-instant)  var(--effect-animation-easing-ease-in-out);
+  --effect-motion-short-1:  var(--effect-animation-duration-short-1)  var(--effect-animation-easing-ease-in-out);
+  --effect-motion-short-2:  var(--effect-animation-duration-short-2)  var(--effect-animation-easing-ease-in-out);
+  --effect-motion-short-3:  var(--effect-animation-duration-short-3)  var(--effect-animation-easing-ease-in-out);
+  --effect-motion-medium-1: var(--effect-animation-duration-medium-1) var(--effect-animation-easing-ease-in-out);
+  --effect-motion-medium-2: var(--effect-animation-duration-medium-2) var(--effect-animation-easing-ease-in-out);
+  --effect-motion-medium-3: var(--effect-animation-duration-medium-3) var(--effect-animation-easing-ease-in-out);
+  --effect-motion-long-1:   var(--effect-animation-duration-long-1)   var(--effect-animation-easing-ease-in-out);
+  --effect-motion-long-2:   var(--effect-animation-duration-long-2)   var(--effect-animation-easing-ease-in-out);
+  --effect-motion-long-3:   var(--effect-animation-duration-long-3)   var(--effect-animation-easing-ease-in-out);
 
-  /* Interaction transition shorthands */
-  --effect-transition-interaction-background-instant: background-color var(--effect-motion-instant);
-  --effect-transition-interaction-background-fast:    background-color var(--effect-motion-fast);
-  --effect-transition-interaction-background-medium:  background-color var(--effect-motion-medium);
-  --effect-transition-interaction-background-slow:    background-color var(--effect-motion-slow);
-  --effect-transition-interaction-background-slower:  background-color var(--effect-motion-slower);
-  --effect-transition-interaction-background-slowest: background-color var(--effect-motion-slowest);
+  /* Interaction transition shorthands — names match Figma duration scale */
+  --effect-transition-interaction-background-instant:  background-color var(--effect-motion-instant);
+  --effect-transition-interaction-background-short-1:  background-color var(--effect-motion-short-1);
+  --effect-transition-interaction-background-short-2:  background-color var(--effect-motion-short-2);
+  --effect-transition-interaction-background-short-3:  background-color var(--effect-motion-short-3);
+  --effect-transition-interaction-background-medium-1: background-color var(--effect-motion-medium-1);
+  --effect-transition-interaction-background-medium-2: background-color var(--effect-motion-medium-2);
+  --effect-transition-interaction-background-medium-3: background-color var(--effect-motion-medium-3);
+  --effect-transition-interaction-background-long-1:   background-color var(--effect-motion-long-1);
+  --effect-transition-interaction-background-long-2:   background-color var(--effect-motion-long-2);
+  --effect-transition-interaction-background-long-3:   background-color var(--effect-motion-long-3);
 
-  --effect-transition-interaction-color-instant: color var(--effect-motion-instant);
-  --effect-transition-interaction-color-fast:    color var(--effect-motion-fast);
-  --effect-transition-interaction-color-medium:  color var(--effect-motion-medium);
-  --effect-transition-interaction-color-slow:    color var(--effect-motion-slow);
-  --effect-transition-interaction-color-slower:  color var(--effect-motion-slower);
-  --effect-transition-interaction-color-slowest: color var(--effect-motion-slowest);
+  --effect-transition-interaction-color-instant:  color var(--effect-motion-instant);
+  --effect-transition-interaction-color-short-1:  color var(--effect-motion-short-1);
+  --effect-transition-interaction-color-short-2:  color var(--effect-motion-short-2);
+  --effect-transition-interaction-color-short-3:  color var(--effect-motion-short-3);
+  --effect-transition-interaction-color-medium-1: color var(--effect-motion-medium-1);
+  --effect-transition-interaction-color-medium-2: color var(--effect-motion-medium-2);
+  --effect-transition-interaction-color-medium-3: color var(--effect-motion-medium-3);
+  --effect-transition-interaction-color-long-1:   color var(--effect-motion-long-1);
+  --effect-transition-interaction-color-long-2:   color var(--effect-motion-long-2);
+  --effect-transition-interaction-color-long-3:   color var(--effect-motion-long-3);
 
-  --effect-transition-interaction-opacity-instant: opacity var(--effect-motion-instant);
-  --effect-transition-interaction-opacity-fast:    opacity var(--effect-motion-fast);
-  --effect-transition-interaction-opacity-medium:  opacity var(--effect-motion-medium);
-  --effect-transition-interaction-opacity-slow:    opacity var(--effect-motion-slow);
-  --effect-transition-interaction-opacity-slower:  opacity var(--effect-motion-slower);
-  --effect-transition-interaction-opacity-slowest: opacity var(--effect-motion-slowest);
+  --effect-transition-interaction-opacity-instant:  opacity var(--effect-motion-instant);
+  --effect-transition-interaction-opacity-short-1:  opacity var(--effect-motion-short-1);
+  --effect-transition-interaction-opacity-short-2:  opacity var(--effect-motion-short-2);
+  --effect-transition-interaction-opacity-short-3:  opacity var(--effect-motion-short-3);
+  --effect-transition-interaction-opacity-medium-1: opacity var(--effect-motion-medium-1);
+  --effect-transition-interaction-opacity-medium-2: opacity var(--effect-motion-medium-2);
+  --effect-transition-interaction-opacity-medium-3: opacity var(--effect-motion-medium-3);
+  --effect-transition-interaction-opacity-long-1:   opacity var(--effect-motion-long-1);
+  --effect-transition-interaction-opacity-long-2:   opacity var(--effect-motion-long-2);
+  --effect-transition-interaction-opacity-long-3:   opacity var(--effect-motion-long-3);
 
-  --effect-transition-interaction-border-color-instant: border-color var(--effect-motion-instant);
-  --effect-transition-interaction-border-color-fast:    border-color var(--effect-motion-fast);
-  --effect-transition-interaction-border-color-medium:  border-color var(--effect-motion-medium);
-  --effect-transition-interaction-border-color-slow:    border-color var(--effect-motion-slow);
-  --effect-transition-interaction-border-color-slower:  border-color var(--effect-motion-slower);
-  --effect-transition-interaction-border-color-slowest: border-color var(--effect-motion-slowest);
+  --effect-transition-interaction-border-color-instant:  border-color var(--effect-motion-instant);
+  --effect-transition-interaction-border-color-short-1:  border-color var(--effect-motion-short-1);
+  --effect-transition-interaction-border-color-short-2:  border-color var(--effect-motion-short-2);
+  --effect-transition-interaction-border-color-short-3:  border-color var(--effect-motion-short-3);
+  --effect-transition-interaction-border-color-medium-1: border-color var(--effect-motion-medium-1);
+  --effect-transition-interaction-border-color-medium-2: border-color var(--effect-motion-medium-2);
+  --effect-transition-interaction-border-color-medium-3: border-color var(--effect-motion-medium-3);
+  --effect-transition-interaction-border-color-long-1:   border-color var(--effect-motion-long-1);
+  --effect-transition-interaction-border-color-long-2:   border-color var(--effect-motion-long-2);
+  --effect-transition-interaction-border-color-long-3:   border-color var(--effect-motion-long-3);
 
-  --effect-transition-interaction-transform-instant: transform var(--effect-motion-instant);
-  --effect-transition-interaction-transform-fast:    transform var(--effect-motion-fast);
-  --effect-transition-interaction-transform-medium:  transform var(--effect-motion-medium);
-  --effect-transition-interaction-transform-slow:    transform var(--effect-motion-slow);
-  --effect-transition-interaction-transform-slower:  transform var(--effect-motion-slower);
-  --effect-transition-interaction-transform-slowest: transform var(--effect-motion-slowest);
+  --effect-transition-interaction-transform-instant:  transform var(--effect-motion-instant);
+  --effect-transition-interaction-transform-short-1:  transform var(--effect-motion-short-1);
+  --effect-transition-interaction-transform-short-2:  transform var(--effect-motion-short-2);
+  --effect-transition-interaction-transform-short-3:  transform var(--effect-motion-short-3);
+  --effect-transition-interaction-transform-medium-1: transform var(--effect-motion-medium-1);
+  --effect-transition-interaction-transform-medium-2: transform var(--effect-motion-medium-2);
+  --effect-transition-interaction-transform-medium-3: transform var(--effect-motion-medium-3);
+  --effect-transition-interaction-transform-long-1:   transform var(--effect-motion-long-1);
+  --effect-transition-interaction-transform-long-2:   transform var(--effect-motion-long-2);
+  --effect-transition-interaction-transform-long-3:   transform var(--effect-motion-long-3);
 
   /* ─────────────────────────────────────────────────────────────────────────
      HAND-AUTHORED — Elevation / shadow tokens.
