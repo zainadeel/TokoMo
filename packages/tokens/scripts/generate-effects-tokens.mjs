@@ -25,7 +25,7 @@
  *   --effect-motion-*               (shorthand: duration + easing combined)
  *   --effect-transition-*           (property-specific transition shorthands)
  *   --effect-inset-*, outset-*, surface-*, edge-*, overlay-*  (box-shadow tokens)
- *   --effect-focus-ring             (composite box-shadow)
+ *   --effect-focus-ring             (composite box-shadow using --dimension-stroke-width-025 and --dimension-space-025)
  */
 
 import { readFileSync, writeFileSync } from 'node:fs';
@@ -214,8 +214,8 @@ const generate = () => {
     calc(-1 * var(--dimension-stroke-width-006)) 0 0 0 var(--color-surface-shadow);
 
   --effect-focus-ring:
-    0 0 0 var(--dimension-focus-ring-offset) transparent,
-    0 0 0 calc(var(--dimension-focus-ring-offset) + var(--dimension-focus-ring-width)) var(--color-foreground-medium-brand);`;
+    0 0 0 var(--dimension-space-025) transparent,
+    0 0 0 calc(var(--dimension-space-025) + var(--dimension-stroke-width-025)) var(--color-foreground-medium-brand);`;
 
   const output = [
     '/* AUTO-GENERATED + HAND-AUTHORED. See scripts/generate-effects-tokens.mjs */',

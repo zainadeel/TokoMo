@@ -179,6 +179,6 @@
     calc(-1 * var(--dimension-stroke-width-006)) 0 0 0 var(--color-surface-shadow);
 
   --effect-focus-ring:
-    0 0 0 var(--dimension-focus-ring-offset) transparent,
-    0 0 0 calc(var(--dimension-focus-ring-offset) + var(--dimension-focus-ring-width)) var(--color-foreground-medium-brand);
+    0 0 0 var(--dimension-space-025) transparent,
+    0 0 0 calc(var(--dimension-space-025) + var(--dimension-stroke-width-025)) var(--color-foreground-medium-brand);
 }

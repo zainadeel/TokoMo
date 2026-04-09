@@ -147,16 +147,6 @@
   /* Intermediate size used by toggle and similar components */
   --dimension-size-450: calc(var(--dimension-size-base) * 9 / 2);  /* 36px */
 
-  /* Divider aliases */
-  --dimension-divider-sm: var(--dimension-stroke-width-006);
-  --dimension-divider-md: var(--dimension-stroke-width-009);
-  --dimension-divider-lg: var(--dimension-stroke-width-012);
-  --dimension-divider-xl: var(--dimension-stroke-width-015);
-
-  /* Focus ring */
-  --dimension-focus-ring-width: var(--dimension-stroke-width-025);
-  --dimension-focus-ring-offset: var(--dimension-space-025);
-
   /* Breakpoint */
   --dimension-breakpoint-mobile: 768px;
 
