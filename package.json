@@ -1,11 +1,11 @@
 {
-  "name": "motive-design-system",
+  "name": "tokomo",
   "private": true,
-  "description": "Motive Design System monorepo — tokens, components, and documentation",
+  "description": "TokoMo — open-source design token system: colors, dimensions, typography, and effects as CSS custom properties, JSON, and TypeScript",
   "scripts": {
     "build": "turbo run build",
-    "build:tokens": "turbo run build --filter=@motive/tokens",
-    "build:components": "turbo run build --filter=@motive/components",
+    "build:tokens": "turbo run build --filter=@tokomo/tokens",
+    "build:components": "turbo run build --filter=@tokomo/components",
     "dev": "turbo run dev",
     "lint": "turbo run lint",
     "format": "prettier --write \"**/*.{ts,tsx,css,json,md}\"",

@@ -1,13 +1,13 @@
-# @motive/tokens
+# @tokomo/tokens
 
-Design tokens for the Motive Design System — colors, dimensions, typography, and effects as CSS custom properties.
+Design tokens for [TokoMo](../../README.md) — colors, dimensions, typography, and effects as CSS custom properties, JSON, and TypeScript constants.
 
 ## Installation
 
 ```bash
-npm install @motive/tokens
+npm install @tokomo/tokens
 # or
-pnpm add @motive/tokens
+pnpm add @tokomo/tokens
 ```
 
 ## Usage
@@ -18,25 +18,25 @@ Import all tokens at once:
 
 ```css
 /* In your app's entry CSS file */
-@import '@motive/tokens';
-@import '@motive/tokens/globals'; /* Base styles: font, focus rings, reduced-motion */
-@import '@motive/tokens/reset';   /* CSS reset (optional) */
+@import '@tokomo/tokens';
+@import '@tokomo/tokens/globals'; /* Base styles: font, focus rings, reduced-motion */
+@import '@tokomo/tokens/reset';   /* CSS reset (optional) */
 ```
 
 Or import individual categories:
 
 ```css
-@import '@motive/tokens/colors';
-@import '@motive/tokens/dimensions';
-@import '@motive/tokens/typography';
-@import '@motive/tokens/effects';
+@import '@tokomo/tokens/colors';
+@import '@tokomo/tokens/dimensions';
+@import '@tokomo/tokens/typography';
+@import '@tokomo/tokens/effects';
 ```
 
 ### In React / JS entry point
 
 ```tsx
-import '@motive/tokens';
-import '@motive/tokens/globals';
+import '@tokomo/tokens';
+import '@tokomo/tokens/globals';
 ```
 
 ### TypeScript constants
@@ -44,7 +44,7 @@ import '@motive/tokens/globals';
 For type-safe token references in JavaScript:
 
 ```tsx
-import { colorBackgroundPrimary, dimensionSpace100 } from '@motive/tokens/ts';
+import { colorBackgroundPrimary, dimensionSpace100 } from '@tokomo/tokens/ts';
 
 // colorBackgroundPrimary === '--color-background-primary'
 element.style.setProperty(colorBackgroundPrimary, '#fff');
@@ -53,8 +53,8 @@ element.style.setProperty(colorBackgroundPrimary, '#fff');
 ### JSON (for tooling, Figma plugins, etc.)
 
 ```js
-import tokens from '@motive/tokens/json';
-import colors from '@motive/tokens/json/colors';
+import tokens from '@tokomo/tokens/json';
+import colors from '@tokomo/tokens/json/colors';
 ```
 
 ## Token Categories

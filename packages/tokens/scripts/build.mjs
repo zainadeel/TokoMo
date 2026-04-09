@@ -1,5 +1,5 @@
 /**
- * Build script for @motive/tokens
+ * Build script for @tokomo/tokens
  *
  * 1. Generates colors.css from JSON token sources (Figma export)
  * 2. Copies all CSS token files to dist/
@@ -27,7 +27,7 @@ function clean() {
 
 function build() {
   const startTime = Date.now();
-  console.log('\n🔨 Building @motive/tokens...\n');
+  console.log('\n🔨 Building @tokomo/tokens...\n');
 
   // Step 1: Clean dist
   clean();
@@ -90,7 +90,7 @@ function build() {
   execSync('node scripts/generate-ts-constants.mjs', { cwd: PKG_ROOT, stdio: 'inherit' });
 
   const elapsed = Date.now() - startTime;
-  console.log(`\n✅ @motive/tokens built in ${elapsed}ms\n`);
+  console.log(`\n✅ @tokomo/tokens built in ${elapsed}ms\n`);
 }
 
 build();

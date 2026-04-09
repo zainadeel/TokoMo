@@ -1,13 +1,13 @@
 /**
- * @motive/components
+ * @tokomo/components
  *
- * Motive Design System React components.
+ * TokoMo React components.
  *
  * Usage:
- *   import '@motive/tokens';                    // Load design tokens
- *   import '@motive/tokens/globals';            // Load global styles
- *   import '@motive/components/styles.css';     // Load component styles
- *   import { ButtonPrimary, Text } from '@motive/components';
+ *   import '@tokomo/tokens';                    // Load design tokens
+ *   import '@tokomo/tokens/globals';            // Load global styles
+ *   import '@tokomo/components/styles.css';     // Load component styles
+ *   import { ButtonPrimary, Text } from '@tokomo/components';
  *
  * Components will be added here as they are extracted from the dashboard.
  * See docs/DESIGN_SYSTEM_PLAN.md for the migration roadmap.

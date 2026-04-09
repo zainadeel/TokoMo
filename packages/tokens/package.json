@@ -1,8 +1,8 @@
 {
-  "name": "@motive/tokens",
+  "name": "@tokomo/tokens",
   "version": "0.1.0",
-  "description": "Motive Design System tokens — colors, dimensions, typography, and effects as CSS custom properties",
-  "license": "UNLICENSED",
+  "description": "TokoMo design tokens — colors, dimensions, typography, and effects as CSS custom properties, JSON, and TypeScript constants",
+  "license": "MIT",
   "type": "module",
   "main": "./dist/index.css",
   "exports": {

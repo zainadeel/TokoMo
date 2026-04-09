@@ -1,12 +1,12 @@
 /**
- * Motive Design System — All Tokens
+ * TokoMo — All Tokens
  *
  * Import this file to get all design tokens (colors, dimensions, typography, effects).
  * For selective imports, use individual entry points:
- *   @import '@motive/tokens/colors';
- *   @import '@motive/tokens/dimensions';
- *   @import '@motive/tokens/typography';
- *   @import '@motive/tokens/effects';
+ *   @import '@tokomo/tokens/colors';
+ *   @import '@tokomo/tokens/dimensions';
+ *   @import '@tokomo/tokens/typography';
+ *   @import '@tokomo/tokens/effects';
  */
 
 @import './colors.css';

@@ -1,8 +1,8 @@
 {
-  "name": "@motive/components",
+  "name": "@tokomo/components",
   "version": "0.1.0",
-  "description": "Motive Design System React components",
-  "license": "UNLICENSED",
+  "description": "TokoMo React components built on the token system",
+  "license": "MIT",
   "type": "module",
   "main": "./dist/index.cjs",
   "module": "./dist/index.mjs",
@@ -29,7 +29,7 @@
     "react-dom": ">=18.0.0"
   },
   "dependencies": {
-    "@motive/tokens": "workspace:*"
+    "@tokomo/tokens": "workspace:*"
   },
   "devDependencies": {
     "@types/react": "^18.3.0",

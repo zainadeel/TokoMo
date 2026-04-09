@@ -1,15 +1,15 @@
 /**
- * Motive Design System — Global Styles
+ * TokoMo — Global Styles
  *
  * Base styles that consuming apps should import alongside tokens.
  * Includes font loading, color scheme, reduced-motion support,
  * focus ring defaults, button press effects, and theme transitions.
  *
  * Usage:
- *   @import '@motive/tokens';
- *   @import '@motive/tokens/globals';
- *   @import '@motive/tokens/reset';     // optional
- *   @import '@motive/tokens/utilities'; // optional
+ *   @import '@tokomo/tokens';
+ *   @import '@tokomo/tokens/globals';
+ *   @import '@tokomo/tokens/reset';     // optional
+ *   @import '@tokomo/tokens/utilities'; // optional
  */
 
 /* Inter font — design system typeface */
@@ -68,7 +68,7 @@ button {
 
 /* Reusable press effect for buttons — scales down to 99% on press */
 .buttonPress {
-  transition: transform var(--effect-motion-fast);
+  transition: transform var(--effect-motion-short-2);
 }
 
 .buttonPress:active {
@@ -104,9 +104,9 @@ input:focus-visible,
 textarea:focus-visible,
 select:focus-visible,
 [tabindex]:focus-visible {
-  outline: var(--dimension-focus-ring-width) solid var(--color-foreground-medium-brand);
-  outline-offset: var(--dimension-focus-ring-offset);
-  transition: outline var(--effect-motion-fast);
+  outline: var(--dimension-stroke-width-025) solid var(--color-foreground-medium-brand);
+  outline-offset: var(--dimension-space-025);
+  transition: outline var(--effect-motion-short-2);
 }
 
 @media (prefers-reduced-motion: reduce) {
