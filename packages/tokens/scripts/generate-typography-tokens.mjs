@@ -12,13 +12,10 @@
  *   --typography-paragraphspacing-* (px)
  *
  * What stays HAND-AUTHORED:
+ *   --typography-font-family        (not a Figma variable in this export)
  *   Text style classes (.text-display-medium, .text-body-large, etc.)
  *   These are composite styles that combine multiple tokens — they live in CSS,
- *   not in Figma variables. They must be maintained manually.
- *
- * ⚠ DISCREPANCIES to resolve in Figma:
- *   line-height-2xl: Figma=48px, current CSS=44px  → update CSS or update Figma
- *   line-height-3xl: Figma=64px, current CSS=56px  → update CSS or update Figma
+ *   not in Figma variables. All property values reference CSS custom properties.
  */
 
 import { readFileSync, writeFileSync } from 'node:fs';
@@ -73,17 +70,25 @@ const generate = () => {
     lines.push(`  --typography-paragraphspacing-${key}: ${roundTo2dp(token.$value)}px;`);
   }
 
-  // ── hand-authored: text style classes ─────────────────────────────────────
+  // ── hand-authored: font family + text style classes ───────────────────────
   const textStyles = `
+  /* ─────────────────────────────────────────────────────────────────────────
+     HAND-AUTHORED — Font family.
+     Not exported as a Figma variable in this collection. Override here to
+     swap the entire typeface without touching individual text style classes.
+     ───────────────────────────────────────────────────────────────────────── */
+  --typography-font-family: 'Inter', sans-serif;
+}
+
 /* ─────────────────────────────────────────────────────────────────────────────
    HAND-AUTHORED — Text style classes.
    These compose multiple typography tokens into reusable CSS classes.
    They cannot be expressed as Figma variables (they are text styles, not variables).
-   Maintain these manually when token values change.
+   All property values reference CSS custom properties — no hard-coded values.
    ───────────────────────────────────────────────────────────────────────────── */
 
 .text-display-medium {
-  font-family: 'Inter', sans-serif;
+  font-family: var(--typography-font-family);
   font-size: var(--typography-fontsize-3xl);
   line-height: var(--typography-lineheight-3xl);
   font-weight: var(--typography-weight-bold);
@@ -91,7 +96,7 @@ const generate = () => {
 }
 
 .text-display-small {
-  font-family: 'Inter', sans-serif;
+  font-family: var(--typography-font-family);
   font-size: var(--typography-fontsize-2xl);
   line-height: var(--typography-lineheight-2xl);
   font-weight: var(--typography-weight-bold);
@@ -99,7 +104,7 @@ const generate = () => {
 }
 
 .text-title-large {
-  font-family: 'Inter', sans-serif;
+  font-family: var(--typography-font-family);
   font-size: var(--typography-fontsize-xl);
   line-height: var(--typography-lineheight-xl);
   font-weight: var(--typography-weight-semibold);
@@ -107,7 +112,7 @@ const generate = () => {
 }
 
 .text-title-medium {
-  font-family: 'Inter', sans-serif;
+  font-family: var(--typography-font-family);
   font-size: var(--typography-fontsize-lg);
   line-height: var(--typography-lineheight-lg);
   font-weight: var(--typography-weight-semibold);
@@ -115,7 +120,7 @@ const generate = () => {
 }
 
 .text-title-small {
-  font-family: 'Inter', sans-serif;
+  font-family: var(--typography-font-family);
   font-size: var(--typography-fontsize-md);
   line-height: var(--typography-lineheight-md);
   font-weight: var(--typography-weight-semibold);
@@ -123,7 +128,7 @@ const generate = () => {
 }
 
 .text-body-large {
-  font-family: 'Inter', sans-serif;
+  font-family: var(--typography-font-family);
   font-size: var(--typography-fontsize-lg);
   line-height: var(--typography-lineheight-lg);
   font-weight: var(--typography-weight-regular);
@@ -131,7 +136,7 @@ const generate = () => {
 }
 
 .text-body-large-emphasis {
-  font-family: 'Inter', sans-serif;
+  font-family: var(--typography-font-family);
   font-size: var(--typography-fontsize-lg);
   line-height: var(--typography-lineheight-lg);
   font-weight: var(--typography-weight-medium);
@@ -139,7 +144,7 @@ const generate = () => {
 }
 
 .text-body-medium {
-  font-family: 'Inter', sans-serif;
+  font-family: var(--typography-font-family);
   font-size: var(--typography-fontsize-md);
   line-height: var(--typography-lineheight-md);
   font-weight: var(--typography-weight-regular);
@@ -147,7 +152,7 @@ const generate = () => {
 }
 
 .text-body-medium-emphasis {
-  font-family: 'Inter', sans-serif;
+  font-family: var(--typography-font-family);
   font-size: var(--typography-fontsize-md);
   line-height: var(--typography-lineheight-md);
   font-weight: var(--typography-weight-medium);
@@ -155,7 +160,7 @@ const generate = () => {
 }
 
 .text-body-small {
-  font-family: 'Inter', sans-serif;
+  font-family: var(--typography-font-family);
   font-size: var(--typography-fontsize-sm);
   line-height: var(--typography-lineheight-sm);
   font-weight: var(--typography-weight-regular);
@@ -163,7 +168,7 @@ const generate = () => {
 }
 
 .text-body-small-emphasis {
-  font-family: 'Inter', sans-serif;
+  font-family: var(--typography-font-family);
   font-size: var(--typography-fontsize-sm);
   line-height: var(--typography-lineheight-sm);
   font-weight: var(--typography-weight-medium);
@@ -171,7 +176,7 @@ const generate = () => {
 }
 
 .text-caption {
-  font-family: 'Inter', sans-serif;
+  font-family: var(--typography-font-family);
   font-size: var(--typography-fontsize-xs);
   line-height: var(--typography-lineheight-xs);
   font-weight: var(--typography-weight-medium);
@@ -180,7 +185,7 @@ const generate = () => {
 }
 
 .text-caption-emphasis {
-  font-family: 'Inter', sans-serif;
+  font-family: var(--typography-font-family);
   font-size: var(--typography-fontsize-xs);
   line-height: var(--typography-lineheight-xs);
   font-weight: var(--typography-weight-semibold);
@@ -188,14 +193,14 @@ const generate = () => {
   letter-spacing: var(--typography-letterspacing-positive);
 }`;
 
+  // Note: the hand-authored block opens with the font-family inside :root {},
+  // then closes :root and continues with the text style classes outside it.
   const output = [
     '/* AUTO-GENERATED + HAND-AUTHORED. See scripts/generate-typography-tokens.mjs */',
     '/* Generated section: from src/json/typography/typography.tokens.json         */',
     '',
     ':root {',
     ...lines,
-    '}',
-    '',
     textStyles,
     '',
   ].join('\n');

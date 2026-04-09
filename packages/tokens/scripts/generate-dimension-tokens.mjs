@@ -5,42 +5,34 @@
  * Output: src/dimensions.css
  *
  * What this generates (from Figma):
- *   --dimension-base
- *   --dimension-space-*          (GAP scope)
- *   --dimension-radius-*         (CORNER_RADIUS scope)
- *   --dimension-stroke-width-*   (STROKE_FLOAT scope; Figma covers 012–050 only)
- *   --dimension-size-*           (WIDTH_HEIGHT scope)
- *   --dimension-iconography-*    (semantic aliases of size-icon)
- *   --dimension-card-width-*
- *   --dimension-modal-width-*
- *   --dimension-form-width-*
- *   --dimension-table-column-width-*
- *   --dimension-menu-width-*
- *   --dimension-tooltip-width-*
- *   --dimension-panel-width-*
+ *   --dimension-base                 (8px — override to scale the whole system)
+ *   --dimension-{space,radius,size,stroke-width}-base   (all alias --dimension-base)
+ *   --dimension-space-*              calc() expressions relative to --dimension-space-base
+ *   --dimension-radius-*             calc() expressions relative to --dimension-radius-base
+ *   --dimension-stroke-width-*       calc() expressions relative to --dimension-stroke-width-base
+ *   --dimension-size-*               calc() expressions relative to --dimension-size-base
+ *   --dimension-iconography-*        calc() expressions relative to --dimension-size-base
+ *   --dimension-{card,modal,form,table-column,menu,tooltip,panel}-width-*   absolute px
  *
- * What stays HAND-AUTHORED (not yet in Figma — add these to get full JSON coverage):
- *   --dimension-space-037 / n037         (3px fractional, not on 8px grid)
- *   --dimension-stroke-width-006         (0.5px — add to Figma)
- *   --dimension-stroke-width-009         (0.75px — add to Figma)
- *   --dimension-size-450                 (36px — add to Figma or remove)
- *   --dimension-size-550                 (44px — conflicts with size-icon-2xl=48px, see note)
- *   --dimension-size-700                 (56px — conflicts with size-icon-3xl=64px, see note)
- *   --dimension-offset-*                 (add to Figma)
- *   --dimension-scale-*                  (unitless, add to Figma)
- *   --dimension-table-*                  (multiplier system — CSS-only concept)
- *   --dimension-z-index-*                (add to Figma)
- *   --dimension-divider-sm/md/lg/xl      (aliases, add to Figma)
- *   --dimension-focus-ring-*             (aliases, add to Figma)
- *   --dimension-breakpoint-*             (add to Figma)
- *   --dimension-magic-*                  (thresholds, add to Figma)
- *   Component-specific tokens            (chat-input, floating, cell, etc. — add to Figma)
+ * How calc() is generated:
+ *   Each token value from Figma is divided by BASE_PX (8) to get a multiplier.
+ *   The multiplier is expressed as a clean integer fraction (e.g. 3/4, 5/4)
+ *   matching the naming convention where the suffix ≈ 100 × (value / 8).
+ *   This lets you scale the entire dimension system by overriding --dimension-base.
  *
- * ⚠ DISCREPANCIES to resolve in Figma before relying fully on JSON:
- *   size-icon-2xl: Figma=48px, current CSS=44px (via size-550)
- *   size-icon-3xl: Figma=64px, current CSS=56px (via size-700)
- *   width-panel-xl: Figma=600px, current CSS=500px (lg was the largest)
- *   size-500 (40px): in Figma but not in current CSS
+ * What stays HAND-AUTHORED:
+ *   --dimension-space-037 / n037      (3px fractional, not on 8px grid)
+ *   --dimension-stroke-width-006/009  (sub-pixel hairlines)
+ *   --dimension-size-450              (36px component size)
+ *   --dimension-offset-*
+ *   --dimension-scale-*
+ *   --dimension-table-*               (multiplier system — CSS-only concept)
+ *   --dimension-z-index-*
+ *   --dimension-divider-*
+ *   --dimension-focus-ring-*
+ *   --dimension-breakpoint-*
+ *   --dimension-magic-*
+ *   Component-specific tokens
  */
 
 import { readFileSync, writeFileSync } from 'node:fs';
@@ -54,60 +46,115 @@ const PKG_ROOT = path.resolve(__dirname, '..');
 const SOURCE = path.join(PKG_ROOT, 'src/json/dimensions/dimensions.tokens.json');
 const OUTPUT  = path.join(PKG_ROOT, 'src/dimensions.css');
 
-const formatValue = (value, isString = false) => {
-  if (isString) return value;
-  // Round to 2dp to clean float noise, then append px
-  const rounded = Math.round(value * 100) / 100;
-  return `${rounded}px`;
+const BASE_PX = 8;
+
+/**
+ * Convert a Figma px value to a calc() expression relative to a CSS base variable.
+ *
+ * Uses clean integer fractions (tries denominators 1, 2, 4, 8, 16, 32) to keep
+ * the output readable — the same style as the hand-authored table multiplier system.
+ *
+ * Examples (base = 8px):
+ *   8  → var(--dimension-space-base)
+ *   4  → calc(var(--dimension-space-base) / 2)
+ *   6  → calc(var(--dimension-space-base) * 3 / 4)
+ *   10 → calc(var(--dimension-space-base) * 5 / 4)
+ *  -8  → calc(var(--dimension-space-base) * -1)
+ *   0  → 0
+ * 9999 → 9999px  (pill/full-round radius escape hatch)
+ */
+const toCalcExpr = (value, baseVar) => {
+  if (value === 0) return '0';
+  if (value === 9999) return '9999px';
+
+  const isNeg  = value < 0;
+  const absVal = Math.abs(value);
+  const absMult = absVal / BASE_PX;
+
+  // Try denominators smallest-first so we get the simplest fraction
+  const DENOMINATORS = [1, 2, 4, 8, 16, 32];
+  for (const den of DENOMINATORS) {
+    const absNum = Math.round(absMult * den);
+    if (Math.abs(absNum / den - absMult) < 1e-9) {
+      const num = isNeg ? -absNum : absNum;
+
+      // mult === ±1 → trivial
+      if (absNum === den) {
+        return isNeg
+          ? `calc(var(${baseVar}) * -1)`
+          : `var(${baseVar})`;
+      }
+      // Integer multiple (denominator = 1)
+      if (den === 1) return `calc(var(${baseVar}) * ${num})`;
+      // Unit numerator with denominator
+      if (absNum === 1) {
+        return isNeg
+          ? `calc(var(${baseVar}) * -1 / ${den})`
+          : `calc(var(${baseVar}) / ${den})`;
+      }
+      // General fraction
+      return `calc(var(${baseVar}) * ${num} / ${den})`;
+    }
+  }
+
+  // Fallback — shouldn't be reached for any Figma token in this file
+  const dec = Math.round((value / BASE_PX) * 1_000_000) / 1_000_000;
+  return `calc(var(${baseVar}) * ${dec})`;
 };
+
+/** Absolute px — for semantic component widths not derived from the grid base */
+const toPx = value => `${value}px`;
 
 const generate = () => {
   const json = JSON.parse(readFileSync(SOURCE, 'utf8'));
   const lines = [];
 
-  // ── base ─────────────────────────────────────────────────────────────────
-  lines.push(`  /* Base */`);
-  lines.push(`  --dimension-base: ${formatValue(json.base.$value)};`);
+  // ── base variables ────────────────────────────────────────────────────────
+  lines.push('  /* Base — override --dimension-base to scale the entire dimension system */');
+  lines.push('  --dimension-base:              8px;');
+  lines.push('  --dimension-space-base:        var(--dimension-base);');
+  lines.push('  --dimension-radius-base:       var(--dimension-base);');
+  lines.push('  --dimension-size-base:         var(--dimension-base);');
+  lines.push('  --dimension-stroke-width-base: var(--dimension-base);');
   lines.push('');
 
   // ── space ─────────────────────────────────────────────────────────────────
-  lines.push(`  /* Spacing — all values derived from --dimension-base (8px grid) */`);
+  lines.push('  /* Spacing — calc() relative to --dimension-space-base */');
   for (const [key, token] of Object.entries(json.space)) {
-    lines.push(`  --dimension-space-${key}: ${formatValue(token.$value)};`);
+    lines.push(`  --dimension-space-${key}: ${toCalcExpr(token.$value, '--dimension-space-base')};`);
   }
   lines.push('');
 
   // ── radius ────────────────────────────────────────────────────────────────
-  lines.push(`  /* Radius */`);
+  lines.push('  /* Radius — calc() relative to --dimension-radius-base */');
   for (const [key, token] of Object.entries(json.radius)) {
-    const value = key === 'half' ? `${token.$value}px` : formatValue(token.$value);
-    lines.push(`  --dimension-radius-${key}: ${value};`);
+    lines.push(`  --dimension-radius-${key}: ${toCalcExpr(token.$value, '--dimension-radius-base')};`);
   }
   lines.push('');
 
-  // ── stroke width (from Figma: 012–050 only) ───────────────────────────────
-  lines.push(`  /* Stroke widths (Figma covers 012–050; 006 and 009 are hand-authored below) */`);
+  // ── stroke width ──────────────────────────────────────────────────────────
+  lines.push('  /* Stroke widths — calc() relative to --dimension-stroke-width-base */');
+  lines.push('  /* (006 and 009 are sub-pixel hairlines, hand-authored below) */');
   for (const [key, token] of Object.entries(json['width-stroke'])) {
-    lines.push(`  --dimension-stroke-width-${key}: ${formatValue(token.$value)};`);
+    lines.push(`  --dimension-stroke-width-${key}: ${toCalcExpr(token.$value, '--dimension-stroke-width-base')};`);
   }
   lines.push('');
 
   // ── size ──────────────────────────────────────────────────────────────────
-  lines.push(`  /* Size — element width/height */`);
+  lines.push('  /* Size — element width/height, calc() relative to --dimension-size-base */');
   for (const [key, token] of Object.entries(json.size)) {
-    const value = key === '000' ? '0' : formatValue(token.$value);
-    lines.push(`  --dimension-size-${key}: ${value};`);
+    lines.push(`  --dimension-size-${key}: ${toCalcExpr(token.$value, '--dimension-size-base')};`);
   }
   lines.push('');
 
-  // ── iconography (size-icon → --dimension-iconography-*) ───────────────────
-  lines.push(`  /* Iconography — semantic size aliases */`);
+  // ── iconography ───────────────────────────────────────────────────────────
+  lines.push('  /* Iconography — semantic icon size aliases, calc() relative to --dimension-size-base */');
   for (const [key, token] of Object.entries(json['size-icon'])) {
-    lines.push(`  --dimension-iconography-${key}: ${formatValue(token.$value)};`);
+    lines.push(`  --dimension-iconography-${key}: ${toCalcExpr(token.$value, '--dimension-size-base')};`);
   }
   lines.push('');
 
-  // ── component widths ──────────────────────────────────────────────────────
+  // ── component widths (absolute px — not derived from base grid) ───────────
   const widthGroups = [
     ['width-card',         'card-width',         'Card widths'],
     ['width-modal',        'modal-width',         'Modal widths'],
@@ -122,7 +169,7 @@ const generate = () => {
     lines.push(`  /* ${comment} */`);
     for (const [key, token] of Object.entries(json[jsonKey])) {
       const isString = token.$type === 'string';
-      const value = isString ? token.$value : formatValue(token.$value);
+      const value = isString ? token.$value : toPx(token.$value);
       lines.push(`  --dimension-${cssPrefix}-${key}: ${value};`);
     }
     lines.push('');
@@ -131,102 +178,102 @@ const generate = () => {
   // ── hand-authored section ─────────────────────────────────────────────────
   const handAuthored = `
   /* ─────────────────────────────────────────────────────────────────────────
-     HAND-AUTHORED — not yet in Figma variables. Add these to Figma to get
-     full JSON-driven coverage. See generate-dimension-tokens.mjs for notes.
+     HAND-AUTHORED — not yet in Figma variables.
+     All calc() values use the shared base vars so they scale automatically.
      ───────────────────────────────────────────────────────────────────────── */
 
-  /* Fractional space tokens (not on 8px grid — add to Figma or remove) */
-  --dimension-space-037: 3px;
-  --dimension-space-n037: -3px;
+  /* Fractional space tokens (3px — not on 8px grid) */
+  --dimension-space-037:  calc(var(--dimension-space-base) * 3 / 8);
+  --dimension-space-n037: calc(var(--dimension-space-base) * -3 / 8);
 
-  /* Sub-pixel stroke widths (add to Figma) */
-  --dimension-stroke-width-006: 0.5px;
-  --dimension-stroke-width-009: 0.75px;
+  /* Sub-pixel stroke widths (hairlines) */
+  --dimension-stroke-width-006: calc(var(--dimension-stroke-width-base) / 16);      /* 0.5px */
+  --dimension-stroke-width-009: calc(var(--dimension-stroke-width-base) * 3 / 32);  /* 0.75px */
 
-  /* Intermediate size tokens used by components (add to Figma or remove) */
-  --dimension-size-450: 36px; /* toggle width */
-  --dimension-size-550: 44px; /* ⚠ conflicts with Figma size-icon-2xl=48px — resolve before removing */
-  --dimension-size-700: 56px; /* ⚠ conflicts with Figma size-icon-3xl=64px — resolve before removing */
+  /* Intermediate size used by toggle and similar components */
+  --dimension-size-450: calc(var(--dimension-size-base) * 9 / 2);  /* 36px */
 
-  /* Divider aliases (add to Figma) */
+  /* Divider aliases */
   --dimension-divider-sm: var(--dimension-stroke-width-006);
   --dimension-divider-md: var(--dimension-stroke-width-009);
   --dimension-divider-lg: var(--dimension-stroke-width-012);
   --dimension-divider-xl: var(--dimension-stroke-width-015);
 
-  /* Focus ring (add to Figma) */
+  /* Focus ring */
   --dimension-focus-ring-width: var(--dimension-stroke-width-025);
   --dimension-focus-ring-offset: var(--dimension-space-025);
 
-  /* Breakpoint (add to Figma) */
+  /* Breakpoint */
   --dimension-breakpoint-mobile: 768px;
 
-  /* Offset tokens — for transforms, background-position (add to Figma) */
-  --dimension-offset-000: 0;
-  --dimension-offset-050: 4px;
-  --dimension-offset-100: 8px;
-  --dimension-offset-125: 10px;
-  --dimension-offset-150: 12px;
-  --dimension-offset-200: 16px;
-  --dimension-offset-n050: -4px;
-  --dimension-offset-n100: -8px;
-  --dimension-offset-n200: -16px;
-  --dimension-offset-n250: -20px;
+  /* Offset tokens — for transforms, background-position */
+  --dimension-offset-000:  0;
+  --dimension-offset-050:  calc(var(--dimension-space-base) / 2);
+  --dimension-offset-100:  var(--dimension-space-base);
+  --dimension-offset-125:  calc(var(--dimension-space-base) * 5 / 4);
+  --dimension-offset-150:  calc(var(--dimension-space-base) * 3 / 2);
+  --dimension-offset-200:  calc(var(--dimension-space-base) * 2);
+  --dimension-offset-n050: calc(var(--dimension-space-base) * -1 / 2);
+  --dimension-offset-n100: calc(var(--dimension-space-base) * -1);
+  --dimension-offset-n200: calc(var(--dimension-space-base) * -2);
+  --dimension-offset-n250: calc(var(--dimension-space-base) * -5 / 2);
 
-  /* Scale tokens — for transform: scale() (add to Figma) */
-  --dimension-scale-100: 1;
+  /* Scale tokens — for transform: scale() */
+  --dimension-scale-100:    1;
   --dimension-scale-subtle: 0.99;
 
-  /* Table density multiplier system — CSS-only concept, not applicable in Figma */
+  /* Table density multiplier system — CSS-only concept, not applicable in Figma.
+     Override --dimension-table-multiplier to change table density without touching
+     any other part of the dimension system. */
   --dimension-table-multiplier: 1;
-  --dimension-table-space-000: 0px;
-  --dimension-table-space-012: calc(var(--dimension-base) * var(--dimension-table-multiplier) / 8);
-  --dimension-table-space-025: calc(var(--dimension-base) * var(--dimension-table-multiplier) / 4);
-  --dimension-table-space-037: calc(var(--dimension-base) * var(--dimension-table-multiplier) * 3 / 8);
-  --dimension-table-space-050: calc(var(--dimension-base) * var(--dimension-table-multiplier) / 2);
-  --dimension-table-space-075: calc(var(--dimension-base) * var(--dimension-table-multiplier) * 3 / 4);
-  --dimension-table-space-100: calc(var(--dimension-base) * var(--dimension-table-multiplier));
-  --dimension-table-space-125: calc(var(--dimension-base) * var(--dimension-table-multiplier) * 5 / 4);
-  --dimension-table-space-150: calc(var(--dimension-base) * var(--dimension-table-multiplier) * 3 / 2);
-  --dimension-table-space-175: calc(var(--dimension-base) * var(--dimension-table-multiplier) * 7 / 4);
-  --dimension-table-space-200: calc(var(--dimension-base) * var(--dimension-table-multiplier) * 2);
-  --dimension-table-space-250: calc(var(--dimension-base) * var(--dimension-table-multiplier) * 5 / 2);
-  --dimension-table-space-300: calc(var(--dimension-base) * var(--dimension-table-multiplier) * 3);
-  --dimension-table-space-400: calc(var(--dimension-base) * var(--dimension-table-multiplier) * 4);
-  --dimension-table-space-600: calc(var(--dimension-base) * var(--dimension-table-multiplier) * 6);
-  --dimension-table-space-800: calc(var(--dimension-base) * var(--dimension-table-multiplier) * 8);
+  --dimension-table-space-000:  0px;
+  --dimension-table-space-012:  calc(var(--dimension-base) * var(--dimension-table-multiplier) / 8);
+  --dimension-table-space-025:  calc(var(--dimension-base) * var(--dimension-table-multiplier) / 4);
+  --dimension-table-space-037:  calc(var(--dimension-base) * var(--dimension-table-multiplier) * 3 / 8);
+  --dimension-table-space-050:  calc(var(--dimension-base) * var(--dimension-table-multiplier) / 2);
+  --dimension-table-space-075:  calc(var(--dimension-base) * var(--dimension-table-multiplier) * 3 / 4);
+  --dimension-table-space-100:  calc(var(--dimension-base) * var(--dimension-table-multiplier));
+  --dimension-table-space-125:  calc(var(--dimension-base) * var(--dimension-table-multiplier) * 5 / 4);
+  --dimension-table-space-150:  calc(var(--dimension-base) * var(--dimension-table-multiplier) * 3 / 2);
+  --dimension-table-space-175:  calc(var(--dimension-base) * var(--dimension-table-multiplier) * 7 / 4);
+  --dimension-table-space-200:  calc(var(--dimension-base) * var(--dimension-table-multiplier) * 2);
+  --dimension-table-space-250:  calc(var(--dimension-base) * var(--dimension-table-multiplier) * 5 / 2);
+  --dimension-table-space-300:  calc(var(--dimension-base) * var(--dimension-table-multiplier) * 3);
+  --dimension-table-space-400:  calc(var(--dimension-base) * var(--dimension-table-multiplier) * 4);
+  --dimension-table-space-600:  calc(var(--dimension-base) * var(--dimension-table-multiplier) * 6);
+  --dimension-table-space-800:  calc(var(--dimension-base) * var(--dimension-table-multiplier) * 8);
   --dimension-table-radius-200: calc(var(--dimension-radius-100) * var(--dimension-table-multiplier) * 2);
 
-  /* Z-index layers (add to Figma) */
-  --dimension-z-index-base: 0;
-  --dimension-z-index-aside: 50;
-  --dimension-z-index-overlay: 250;
-  --dimension-z-index-overlay-button: 300;
-  --dimension-z-index-floating-assistant: 400;
-  --dimension-z-index-modal: 450;
-  --dimension-z-index-floating: 500;
-  --dimension-z-index-tooltip: 750;
-  --dimension-z-index-theme-transition: 999999;
+  /* Z-index layers */
+  --dimension-z-index-base:                0;
+  --dimension-z-index-aside:               50;
+  --dimension-z-index-overlay:             250;
+  --dimension-z-index-overlay-button:      300;
+  --dimension-z-index-floating-assistant:  400;
+  --dimension-z-index-modal:               450;
+  --dimension-z-index-floating:            500;
+  --dimension-z-index-tooltip:             750;
+  --dimension-z-index-theme-transition:    999999;
 
-  /* Interaction / magic thresholds (add to Figma) */
-  --dimension-magic-resize-edge: 4px;
-  --dimension-magic-resize-snap: 8px;
-  --dimension-magic-drag-threshold: 3px;
-  --dimension-magic-speed-threshold: 5px;
-  --dimension-magic-scroll-fade-divisor: 15;
+  /* Interaction / magic thresholds */
+  --dimension-magic-resize-edge:          calc(var(--dimension-space-base) / 2);
+  --dimension-magic-resize-snap:          var(--dimension-space-base);
+  --dimension-magic-drag-threshold:       calc(var(--dimension-space-base) * 3 / 8);
+  --dimension-magic-speed-threshold:      calc(var(--dimension-space-base) * 5 / 8);
+  --dimension-magic-scroll-fade-divisor:  15;
 
-  /* Component-specific (add to Figma) */
-  --dimension-chat-input-min-height: 32px;
-  --dimension-chat-input-max-height: 112px;
-  --dimension-chat-input-container-max-height: 164px;
-  --dimension-color-preview-width: 64px;
-  --dimension-color-swatch-height: 80px;
-  --dimension-tooltip-max-height: 100px;
-  --dimension-floating-width: 300px;
-  --dimension-floating-height-default: 400px;
-  --dimension-floating-height-max: 600px;
-  --dimension-cell-width-default: 200px;
-  --dimension-cell-width-color: 200px;`;
+  /* Component-specific */
+  --dimension-chat-input-min-height:          calc(var(--dimension-size-base) * 4);
+  --dimension-chat-input-max-height:          calc(var(--dimension-size-base) * 14);
+  --dimension-chat-input-container-max-height: calc(var(--dimension-size-base) * 41 / 2);
+  --dimension-color-preview-width:            calc(var(--dimension-size-base) * 8);
+  --dimension-color-swatch-height:            calc(var(--dimension-size-base) * 10);
+  --dimension-tooltip-max-height:             calc(var(--dimension-size-base) * 25 / 2);
+  --dimension-floating-width:                 300px;
+  --dimension-floating-height-default:        400px;
+  --dimension-floating-height-max:            600px;
+  --dimension-cell-width-default:             200px;
+  --dimension-cell-width-color:               200px;`;
 
   const output = [
     '/* AUTO-GENERATED + HAND-AUTHORED. See scripts/generate-dimension-tokens.mjs */',

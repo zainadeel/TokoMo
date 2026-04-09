@@ -2,88 +2,93 @@
 /* Generated section: from src/json/dimensions/dimensions.tokens.json        */
 
 :root {
-  /* Base */
-  --dimension-base: 8px;
+  /* Base — override --dimension-base to scale the entire dimension system */
+  --dimension-base:              8px;
+  --dimension-space-base:        var(--dimension-base);
+  --dimension-radius-base:       var(--dimension-base);
+  --dimension-size-base:         var(--dimension-base);
+  --dimension-stroke-width-base: var(--dimension-base);
 
-  /* Spacing — all values derived from --dimension-base (8px grid) */
-  --dimension-space-100: 8px;
-  --dimension-space-125: 10px;
-  --dimension-space-150: 12px;
-  --dimension-space-175: 14px;
-  --dimension-space-200: 16px;
-  --dimension-space-250: 20px;
-  --dimension-space-300: 24px;
-  --dimension-space-400: 32px;
-  --dimension-space-600: 48px;
-  --dimension-space-800: 64px;
-  --dimension-space-000: 0px;
-  --dimension-space-012: 1px;
-  --dimension-space-025: 2px;
-  --dimension-space-050: 4px;
-  --dimension-space-075: 6px;
-  --dimension-space-n012: -1px;
-  --dimension-space-n025: -2px;
-  --dimension-space-n050: -4px;
-  --dimension-space-n075: -6px;
-  --dimension-space-n100: -8px;
-  --dimension-space-n125: -10px;
-  --dimension-space-n150: -12px;
-  --dimension-space-n175: -14px;
-  --dimension-space-n200: -16px;
-  --dimension-space-n250: -20px;
-  --dimension-space-n300: -24px;
-  --dimension-space-n400: -32px;
-  --dimension-space-n600: -48px;
-  --dimension-space-n800: -64px;
+  /* Spacing — calc() relative to --dimension-space-base */
+  --dimension-space-100: var(--dimension-space-base);
+  --dimension-space-125: calc(var(--dimension-space-base) * 5 / 4);
+  --dimension-space-150: calc(var(--dimension-space-base) * 3 / 2);
+  --dimension-space-175: calc(var(--dimension-space-base) * 7 / 4);
+  --dimension-space-200: calc(var(--dimension-space-base) * 2);
+  --dimension-space-250: calc(var(--dimension-space-base) * 5 / 2);
+  --dimension-space-300: calc(var(--dimension-space-base) * 3);
+  --dimension-space-400: calc(var(--dimension-space-base) * 4);
+  --dimension-space-600: calc(var(--dimension-space-base) * 6);
+  --dimension-space-800: calc(var(--dimension-space-base) * 8);
+  --dimension-space-000: 0;
+  --dimension-space-012: calc(var(--dimension-space-base) / 8);
+  --dimension-space-025: calc(var(--dimension-space-base) / 4);
+  --dimension-space-050: calc(var(--dimension-space-base) / 2);
+  --dimension-space-075: calc(var(--dimension-space-base) * 3 / 4);
+  --dimension-space-n012: calc(var(--dimension-space-base) * -1 / 8);
+  --dimension-space-n025: calc(var(--dimension-space-base) * -1 / 4);
+  --dimension-space-n050: calc(var(--dimension-space-base) * -1 / 2);
+  --dimension-space-n075: calc(var(--dimension-space-base) * -3 / 4);
+  --dimension-space-n100: calc(var(--dimension-space-base) * -1);
+  --dimension-space-n125: calc(var(--dimension-space-base) * -5 / 4);
+  --dimension-space-n150: calc(var(--dimension-space-base) * -3 / 2);
+  --dimension-space-n175: calc(var(--dimension-space-base) * -7 / 4);
+  --dimension-space-n200: calc(var(--dimension-space-base) * -2);
+  --dimension-space-n250: calc(var(--dimension-space-base) * -5 / 2);
+  --dimension-space-n300: calc(var(--dimension-space-base) * -3);
+  --dimension-space-n400: calc(var(--dimension-space-base) * -4);
+  --dimension-space-n600: calc(var(--dimension-space-base) * -6);
+  --dimension-space-n800: calc(var(--dimension-space-base) * -8);
 
-  /* Radius */
-  --dimension-radius-100: 8px;
-  --dimension-radius-125: 10px;
-  --dimension-radius-150: 12px;
-  --dimension-radius-175: 14px;
-  --dimension-radius-200: 16px;
-  --dimension-radius-250: 20px;
-  --dimension-radius-275: 22px;
-  --dimension-radius-300: 24px;
-  --dimension-radius-400: 32px;
-  --dimension-radius-600: 48px;
-  --dimension-radius-000: 0px;
-  --dimension-radius-012: 1px;
-  --dimension-radius-025: 2px;
-  --dimension-radius-037: 3px;
-  --dimension-radius-050: 4px;
-  --dimension-radius-075: 6px;
+  /* Radius — calc() relative to --dimension-radius-base */
+  --dimension-radius-100: var(--dimension-radius-base);
+  --dimension-radius-125: calc(var(--dimension-radius-base) * 5 / 4);
+  --dimension-radius-150: calc(var(--dimension-radius-base) * 3 / 2);
+  --dimension-radius-175: calc(var(--dimension-radius-base) * 7 / 4);
+  --dimension-radius-200: calc(var(--dimension-radius-base) * 2);
+  --dimension-radius-250: calc(var(--dimension-radius-base) * 5 / 2);
+  --dimension-radius-275: calc(var(--dimension-radius-base) * 11 / 4);
+  --dimension-radius-300: calc(var(--dimension-radius-base) * 3);
+  --dimension-radius-400: calc(var(--dimension-radius-base) * 4);
+  --dimension-radius-600: calc(var(--dimension-radius-base) * 6);
+  --dimension-radius-000: 0;
+  --dimension-radius-012: calc(var(--dimension-radius-base) / 8);
+  --dimension-radius-025: calc(var(--dimension-radius-base) / 4);
+  --dimension-radius-037: calc(var(--dimension-radius-base) * 3 / 8);
+  --dimension-radius-050: calc(var(--dimension-radius-base) / 2);
+  --dimension-radius-075: calc(var(--dimension-radius-base) * 3 / 4);
   --dimension-radius-half: 9999px;
 
-  /* Stroke widths (Figma covers 012–050; 006 and 009 are hand-authored below) */
-  --dimension-stroke-width-012: 1px;
-  --dimension-stroke-width-015: 1.25px;
-  --dimension-stroke-width-018: 1.5px;
-  --dimension-stroke-width-025: 2px;
-  --dimension-stroke-width-037: 3px;
-  --dimension-stroke-width-050: 4px;
+  /* Stroke widths — calc() relative to --dimension-stroke-width-base */
+  /* (006 and 009 are sub-pixel hairlines, hand-authored below) */
+  --dimension-stroke-width-012: calc(var(--dimension-stroke-width-base) / 8);
+  --dimension-stroke-width-015: calc(var(--dimension-stroke-width-base) * 5 / 32);
+  --dimension-stroke-width-018: calc(var(--dimension-stroke-width-base) * 3 / 16);
+  --dimension-stroke-width-025: calc(var(--dimension-stroke-width-base) / 4);
+  --dimension-stroke-width-037: calc(var(--dimension-stroke-width-base) * 3 / 8);
+  --dimension-stroke-width-050: calc(var(--dimension-stroke-width-base) / 2);
 
-  /* Size — element width/height */
-  --dimension-size-100: 8px;
-  --dimension-size-150: 12px;
-  --dimension-size-200: 16px;
-  --dimension-size-250: 20px;
-  --dimension-size-300: 24px;
-  --dimension-size-400: 32px;
-  --dimension-size-500: 40px;
-  --dimension-size-600: 48px;
-  --dimension-size-800: 64px;
+  /* Size — element width/height, calc() relative to --dimension-size-base */
+  --dimension-size-100: var(--dimension-size-base);
+  --dimension-size-150: calc(var(--dimension-size-base) * 3 / 2);
+  --dimension-size-200: calc(var(--dimension-size-base) * 2);
+  --dimension-size-250: calc(var(--dimension-size-base) * 5 / 2);
+  --dimension-size-300: calc(var(--dimension-size-base) * 3);
+  --dimension-size-400: calc(var(--dimension-size-base) * 4);
+  --dimension-size-500: calc(var(--dimension-size-base) * 5);
+  --dimension-size-600: calc(var(--dimension-size-base) * 6);
+  --dimension-size-800: calc(var(--dimension-size-base) * 8);
   --dimension-size-000: 0;
-  --dimension-size-050: 4px;
+  --dimension-size-050: calc(var(--dimension-size-base) / 2);
 
-  /* Iconography — semantic size aliases */
-  --dimension-iconography-xs: 12px;
-  --dimension-iconography-sm: 16px;
-  --dimension-iconography-md: 20px;
-  --dimension-iconography-lg: 24px;
-  --dimension-iconography-xl: 32px;
-  --dimension-iconography-2xl: 48px;
-  --dimension-iconography-3xl: 64px;
+  /* Iconography — semantic icon size aliases, calc() relative to --dimension-size-base */
+  --dimension-iconography-xs: calc(var(--dimension-size-base) * 3 / 2);
+  --dimension-iconography-sm: calc(var(--dimension-size-base) * 2);
+  --dimension-iconography-md: calc(var(--dimension-size-base) * 5 / 2);
+  --dimension-iconography-lg: calc(var(--dimension-size-base) * 3);
+  --dimension-iconography-xl: calc(var(--dimension-size-base) * 4);
+  --dimension-iconography-2xl: calc(var(--dimension-size-base) * 6);
+  --dimension-iconography-3xl: calc(var(--dimension-size-base) * 8);
 
   /* Card widths */
   --dimension-card-width-sm: 400px;
@@ -127,100 +132,100 @@
 
 
   /* ─────────────────────────────────────────────────────────────────────────
-     HAND-AUTHORED — not yet in Figma variables. Add these to Figma to get
-     full JSON-driven coverage. See generate-dimension-tokens.mjs for notes.
+     HAND-AUTHORED — not yet in Figma variables.
+     All calc() values use the shared base vars so they scale automatically.
      ───────────────────────────────────────────────────────────────────────── */
 
-  /* Fractional space tokens (not on 8px grid — add to Figma or remove) */
-  --dimension-space-037: 3px;
-  --dimension-space-n037: -3px;
+  /* Fractional space tokens (3px — not on 8px grid) */
+  --dimension-space-037:  calc(var(--dimension-space-base) * 3 / 8);
+  --dimension-space-n037: calc(var(--dimension-space-base) * -3 / 8);
 
-  /* Sub-pixel stroke widths (add to Figma) */
-  --dimension-stroke-width-006: 0.5px;
-  --dimension-stroke-width-009: 0.75px;
+  /* Sub-pixel stroke widths (hairlines) */
+  --dimension-stroke-width-006: calc(var(--dimension-stroke-width-base) / 16);      /* 0.5px */
+  --dimension-stroke-width-009: calc(var(--dimension-stroke-width-base) * 3 / 32);  /* 0.75px */
 
-  /* Intermediate size tokens used by components (add to Figma or remove) */
-  --dimension-size-450: 36px; /* toggle width */
-  --dimension-size-550: 44px; /* ⚠ conflicts with Figma size-icon-2xl=48px — resolve before removing */
-  --dimension-size-700: 56px; /* ⚠ conflicts with Figma size-icon-3xl=64px — resolve before removing */
+  /* Intermediate size used by toggle and similar components */
+  --dimension-size-450: calc(var(--dimension-size-base) * 9 / 2);  /* 36px */
 
-  /* Divider aliases (add to Figma) */
+  /* Divider aliases */
   --dimension-divider-sm: var(--dimension-stroke-width-006);
   --dimension-divider-md: var(--dimension-stroke-width-009);
   --dimension-divider-lg: var(--dimension-stroke-width-012);
   --dimension-divider-xl: var(--dimension-stroke-width-015);
 
-  /* Focus ring (add to Figma) */
+  /* Focus ring */
   --dimension-focus-ring-width: var(--dimension-stroke-width-025);
   --dimension-focus-ring-offset: var(--dimension-space-025);
 
-  /* Breakpoint (add to Figma) */
+  /* Breakpoint */
   --dimension-breakpoint-mobile: 768px;
 
-  /* Offset tokens — for transforms, background-position (add to Figma) */
-  --dimension-offset-000: 0;
-  --dimension-offset-050: 4px;
-  --dimension-offset-100: 8px;
-  --dimension-offset-125: 10px;
-  --dimension-offset-150: 12px;
-  --dimension-offset-200: 16px;
-  --dimension-offset-n050: -4px;
-  --dimension-offset-n100: -8px;
-  --dimension-offset-n200: -16px;
-  --dimension-offset-n250: -20px;
+  /* Offset tokens — for transforms, background-position */
+  --dimension-offset-000:  0;
+  --dimension-offset-050:  calc(var(--dimension-space-base) / 2);
+  --dimension-offset-100:  var(--dimension-space-base);
+  --dimension-offset-125:  calc(var(--dimension-space-base) * 5 / 4);
+  --dimension-offset-150:  calc(var(--dimension-space-base) * 3 / 2);
+  --dimension-offset-200:  calc(var(--dimension-space-base) * 2);
+  --dimension-offset-n050: calc(var(--dimension-space-base) * -1 / 2);
+  --dimension-offset-n100: calc(var(--dimension-space-base) * -1);
+  --dimension-offset-n200: calc(var(--dimension-space-base) * -2);
+  --dimension-offset-n250: calc(var(--dimension-space-base) * -5 / 2);
 
-  /* Scale tokens — for transform: scale() (add to Figma) */
-  --dimension-scale-100: 1;
+  /* Scale tokens — for transform: scale() */
+  --dimension-scale-100:    1;
   --dimension-scale-subtle: 0.99;
 
-  /* Table density multiplier system — CSS-only concept, not applicable in Figma */
+  /* Table density multiplier system — CSS-only concept, not applicable in Figma.
+     Override --dimension-table-multiplier to change table density without touching
+     any other part of the dimension system. */
   --dimension-table-multiplier: 1;
-  --dimension-table-space-000: 0px;
-  --dimension-table-space-012: calc(var(--dimension-base) * var(--dimension-table-multiplier) / 8);
-  --dimension-table-space-025: calc(var(--dimension-base) * var(--dimension-table-multiplier) / 4);
-  --dimension-table-space-037: calc(var(--dimension-base) * var(--dimension-table-multiplier) * 3 / 8);
-  --dimension-table-space-050: calc(var(--dimension-base) * var(--dimension-table-multiplier) / 2);
-  --dimension-table-space-075: calc(var(--dimension-base) * var(--dimension-table-multiplier) * 3 / 4);
-  --dimension-table-space-100: calc(var(--dimension-base) * var(--dimension-table-multiplier));
-  --dimension-table-space-125: calc(var(--dimension-base) * var(--dimension-table-multiplier) * 5 / 4);
-  --dimension-table-space-150: calc(var(--dimension-base) * var(--dimension-table-multiplier) * 3 / 2);
-  --dimension-table-space-175: calc(var(--dimension-base) * var(--dimension-table-multiplier) * 7 / 4);
-  --dimension-table-space-200: calc(var(--dimension-base) * var(--dimension-table-multiplier) * 2);
-  --dimension-table-space-250: calc(var(--dimension-base) * var(--dimension-table-multiplier) * 5 / 2);
-  --dimension-table-space-300: calc(var(--dimension-base) * var(--dimension-table-multiplier) * 3);
-  --dimension-table-space-400: calc(var(--dimension-base) * var(--dimension-table-multiplier) * 4);
-  --dimension-table-space-600: calc(var(--dimension-base) * var(--dimension-table-multiplier) * 6);
-  --dimension-table-space-800: calc(var(--dimension-base) * var(--dimension-table-multiplier) * 8);
+  --dimension-table-space-000:  0px;
+  --dimension-table-space-012:  calc(var(--dimension-base) * var(--dimension-table-multiplier) / 8);
+  --dimension-table-space-025:  calc(var(--dimension-base) * var(--dimension-table-multiplier) / 4);
+  --dimension-table-space-037:  calc(var(--dimension-base) * var(--dimension-table-multiplier) * 3 / 8);
+  --dimension-table-space-050:  calc(var(--dimension-base) * var(--dimension-table-multiplier) / 2);
+  --dimension-table-space-075:  calc(var(--dimension-base) * var(--dimension-table-multiplier) * 3 / 4);
+  --dimension-table-space-100:  calc(var(--dimension-base) * var(--dimension-table-multiplier));
+  --dimension-table-space-125:  calc(var(--dimension-base) * var(--dimension-table-multiplier) * 5 / 4);
+  --dimension-table-space-150:  calc(var(--dimension-base) * var(--dimension-table-multiplier) * 3 / 2);
+  --dimension-table-space-175:  calc(var(--dimension-base) * var(--dimension-table-multiplier) * 7 / 4);
+  --dimension-table-space-200:  calc(var(--dimension-base) * var(--dimension-table-multiplier) * 2);
+  --dimension-table-space-250:  calc(var(--dimension-base) * var(--dimension-table-multiplier) * 5 / 2);
+  --dimension-table-space-300:  calc(var(--dimension-base) * var(--dimension-table-multiplier) * 3);
+  --dimension-table-space-400:  calc(var(--dimension-base) * var(--dimension-table-multiplier) * 4);
+  --dimension-table-space-600:  calc(var(--dimension-base) * var(--dimension-table-multiplier) * 6);
+  --dimension-table-space-800:  calc(var(--dimension-base) * var(--dimension-table-multiplier) * 8);
   --dimension-table-radius-200: calc(var(--dimension-radius-100) * var(--dimension-table-multiplier) * 2);
 
-  /* Z-index layers (add to Figma) */
-  --dimension-z-index-base: 0;
-  --dimension-z-index-aside: 50;
-  --dimension-z-index-overlay: 250;
-  --dimension-z-index-overlay-button: 300;
-  --dimension-z-index-floating-assistant: 400;
-  --dimension-z-index-modal: 450;
-  --dimension-z-index-floating: 500;
-  --dimension-z-index-tooltip: 750;
-  --dimension-z-index-theme-transition: 999999;
+  /* Z-index layers */
+  --dimension-z-index-base:                0;
+  --dimension-z-index-aside:               50;
+  --dimension-z-index-overlay:             250;
+  --dimension-z-index-overlay-button:      300;
+  --dimension-z-index-floating-assistant:  400;
+  --dimension-z-index-modal:               450;
+  --dimension-z-index-floating:            500;
+  --dimension-z-index-tooltip:             750;
+  --dimension-z-index-theme-transition:    999999;
 
-  /* Interaction / magic thresholds (add to Figma) */
-  --dimension-magic-resize-edge: 4px;
-  --dimension-magic-resize-snap: 8px;
-  --dimension-magic-drag-threshold: 3px;
-  --dimension-magic-speed-threshold: 5px;
-  --dimension-magic-scroll-fade-divisor: 15;
+  /* Interaction / magic thresholds */
+  --dimension-magic-resize-edge:          calc(var(--dimension-space-base) / 2);
+  --dimension-magic-resize-snap:          var(--dimension-space-base);
+  --dimension-magic-drag-threshold:       calc(var(--dimension-space-base) * 3 / 8);
+  --dimension-magic-speed-threshold:      calc(var(--dimension-space-base) * 5 / 8);
+  --dimension-magic-scroll-fade-divisor:  15;
 
-  /* Component-specific (add to Figma) */
-  --dimension-chat-input-min-height: 32px;
-  --dimension-chat-input-max-height: 112px;
-  --dimension-chat-input-container-max-height: 164px;
-  --dimension-color-preview-width: 64px;
-  --dimension-color-swatch-height: 80px;
-  --dimension-tooltip-max-height: 100px;
-  --dimension-floating-width: 300px;
-  --dimension-floating-height-default: 400px;
-  --dimension-floating-height-max: 600px;
-  --dimension-cell-width-default: 200px;
-  --dimension-cell-width-color: 200px;
+  /* Component-specific */
+  --dimension-chat-input-min-height:          calc(var(--dimension-size-base) * 4);
+  --dimension-chat-input-max-height:          calc(var(--dimension-size-base) * 14);
+  --dimension-chat-input-container-max-height: calc(var(--dimension-size-base) * 41 / 2);
+  --dimension-color-preview-width:            calc(var(--dimension-size-base) * 8);
+  --dimension-color-swatch-height:            calc(var(--dimension-size-base) * 10);
+  --dimension-tooltip-max-height:             calc(var(--dimension-size-base) * 25 / 2);
+  --dimension-floating-width:                 300px;
+  --dimension-floating-height-default:        400px;
+  --dimension-floating-height-max:            600px;
+  --dimension-cell-width-default:             200px;
+  --dimension-cell-width-color:               200px;
 }
