@@ -72,7 +72,7 @@ Organized in three layers:
    - `--color-foreground-{primary|secondary|tertiary|bold|medium|faint}-{intent}`
    - `--color-interaction-{hover|pressed}`
 
-3. **Data colors** — domain-specific (geofence, driver status, entity markers, safety scores)
+3. **Data colors** — data visualization colors (categorical sequences, diverging scales, win/loss, etc.)
 
 ### Dimensions
 
