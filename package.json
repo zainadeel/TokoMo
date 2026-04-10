@@ -15,11 +15,11 @@
     "theming",
     "dark-mode"
   ],
-  "homepage": "https://github.com/zainadeel/tokomo#readme",
-  "bugs": "https://github.com/zainadeel/tokomo/issues",
+  "homepage": "https://github.com/zainadeel/TokoMo#readme",
+  "bugs": "https://github.com/zainadeel/TokoMo/issues",
   "repository": {
     "type": "git",
-    "url": "https://github.com/zainadeel/tokomo.git"
+    "url": "https://github.com/zainadeel/TokoMo.git"
   },
   "license": "MIT",
   "type": "module",
