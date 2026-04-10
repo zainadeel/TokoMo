@@ -24,18 +24,18 @@
   inset: 0;
   background-color: var(--color-background-shade);
   opacity: 0;
-  transition: opacity var(--effect-motion-fast);
+  transition: opacity var(--effect-motion-short-2);
   pointer-events: none;
   border-radius: inherit;
   z-index: 1;
 }
 
 .buttonInteraction:hover::before {
-  opacity: var(--opacity-interaction-hover, 0.08);
+  opacity: 0.08;
 }
 
 .buttonInteraction:active::before {
-  opacity: var(--opacity-interaction-pressed, 0.16);
+  opacity: 0.16;
 }
 
 .buttonInteraction:disabled::before {
@@ -63,8 +63,8 @@
 }
 
 .focusRing:focus-visible {
-  outline: var(--dimension-focus-ring-width) solid var(--color-foreground-medium-brand);
-  outline-offset: var(--dimension-focus-ring-offset);
+  outline: var(--dimension-stroke-width-025) solid var(--color-foreground-medium-brand);
+  outline-offset: var(--dimension-offset-025);
 }
 
 /* ============================================
@@ -171,17 +171,17 @@
    ============================================ */
 
 .transitionColors {
-  transition: color var(--effect-motion-fast), 
-              background-color var(--effect-motion-fast), 
-              border-color var(--effect-motion-fast), 
-              fill var(--effect-motion-fast), 
-              stroke var(--effect-motion-fast);
+  transition: color var(--effect-motion-short-2),
+              background-color var(--effect-motion-short-2),
+              border-color var(--effect-motion-short-2),
+              fill var(--effect-motion-short-2),
+              stroke var(--effect-motion-short-2);
 }
 
 .transitionAll {
-  transition: all var(--effect-motion-medium);
+  transition: all var(--effect-motion-medium-1);
 }
 
 .transitionTransform {
-  transition: transform var(--effect-motion-fast);
+  transition: transform var(--effect-motion-short-2);
 }

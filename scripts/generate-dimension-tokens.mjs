@@ -13,6 +13,9 @@
  *   --dimension-size-*               calc() expressions relative to --dimension-size-base
  *   --dimension-iconography-*        calc() expressions relative to --dimension-size-base
  *   --dimension-{card,modal,form,table-column,menu,tooltip,panel}-width-*   absolute px
+ *   --dimension-offset-*             calc() expressions relative to --dimension-space-base
+ *   --dimension-scale-*              unitless multipliers (passthrough)
+ *   --dimension-z-index-*            unitless layering values (passthrough)
  *
  * How calc() is generated:
  *   Each token value from Figma is divided by BASE_PX (8) to get a multiplier.
@@ -20,19 +23,6 @@
  *   matching the naming convention where the suffix ≈ 100 × (value / 8).
  *   This lets you scale the entire dimension system by overriding --dimension-base.
  *
- * What stays HAND-AUTHORED:
- *   --dimension-space-037 / n037      (3px fractional, not on 8px grid)
- *   --dimension-stroke-width-006/009  (sub-pixel hairlines)
- *   --dimension-size-450              (36px component size)
- *   --dimension-offset-*
- *   --dimension-scale-*
- *   --dimension-table-*               (multiplier system — CSS-only concept)
- *   --dimension-z-index-*
- *   --dimension-divider-*
- *   --dimension-focus-ring-*
- *   --dimension-breakpoint-*
- *   --dimension-magic-*
- *   Component-specific tokens
  */
 
 import { readFileSync, writeFileSync } from 'node:fs';
@@ -134,7 +124,6 @@ const generate = () => {
 
   // ── stroke width ──────────────────────────────────────────────────────────
   lines.push('  /* Stroke widths — calc() relative to --dimension-stroke-width-base */');
-  lines.push('  /* (006 and 009 are sub-pixel hairlines, hand-authored below) */');
   for (const [key, token] of Object.entries(json['width-stroke'])) {
     lines.push(`  --dimension-stroke-width-${key}: ${toCalcExpr(token.$value, '--dimension-stroke-width-base')};`);
   }
@@ -175,58 +164,37 @@ const generate = () => {
     lines.push('');
   }
 
-  // ── hand-authored section ─────────────────────────────────────────────────
-  const handAuthored = `
-  /* ─────────────────────────────────────────────────────────────────────────
-     HAND-AUTHORED — not yet in Figma variables.
-     All calc() values use the shared base vars so they scale automatically.
-     ───────────────────────────────────────────────────────────────────────── */
+  // ── offset ───────────────────────────────────────────────────────────────
+  lines.push('  /* Offset — for transforms and background-position, calc() relative to --dimension-space-base */');
+  for (const [key, token] of Object.entries(json.offset)) {
+    const value = typeof token.$value === 'string' ? parseFloat(token.$value) : token.$value;
+    lines.push(`  --dimension-offset-${key}: ${toCalcExpr(value, '--dimension-space-base')};`);
+  }
+  lines.push('');
 
-  /* Fractional space tokens (3px — not on 8px grid) */
-  --dimension-space-037:  calc(var(--dimension-space-base) * 3 / 8);
-  --dimension-space-n037: calc(var(--dimension-space-base) * -3 / 8);
+  // ── scale ───────────────────────────────────────────────────────────────
+  lines.push('  /* Scale — unitless multipliers for transform: scale() */');
+  for (const [key, token] of Object.entries(json.scale)) {
+    const val = typeof token.$value === 'number'
+      ? Math.round(token.$value * 1_000_000) / 1_000_000
+      : token.$value;
+    lines.push(`  --dimension-scale-${key}: ${val};`);
+  }
+  lines.push('');
 
-  /* Sub-pixel stroke widths (hairlines) */
-  --dimension-stroke-width-006: calc(var(--dimension-stroke-width-base) / 16);      /* 0.5px */
-  --dimension-stroke-width-009: calc(var(--dimension-stroke-width-base) * 3 / 32);  /* 0.75px */
-
-  /* Intermediate size (36px — between size-400 and size-500) */
-  --dimension-size-450: calc(var(--dimension-size-base) * 9 / 2);
-
-  /* Breakpoints */
-  --dimension-breakpoint-mobile: 768px;
-
-  /* Offset tokens — for transforms and background-position */
-  --dimension-offset-000:  0;
-  --dimension-offset-050:  calc(var(--dimension-space-base) / 2);
-  --dimension-offset-100:  var(--dimension-space-base);
-  --dimension-offset-125:  calc(var(--dimension-space-base) * 5 / 4);
-  --dimension-offset-150:  calc(var(--dimension-space-base) * 3 / 2);
-  --dimension-offset-200:  calc(var(--dimension-space-base) * 2);
-  --dimension-offset-n050: calc(var(--dimension-space-base) * -1 / 2);
-  --dimension-offset-n100: calc(var(--dimension-space-base) * -1);
-  --dimension-offset-n200: calc(var(--dimension-space-base) * -2);
-  --dimension-offset-n250: calc(var(--dimension-space-base) * -5 / 2);
-
-  /* Scale tokens — for transform: scale() */
-  --dimension-scale-100:    1;
-  --dimension-scale-subtle: 0.99;
-
-  /* Z-index layers */
-  --dimension-z-index-base:     0;
-  --dimension-z-index-raised:   50;
-  --dimension-z-index-overlay:  250;
-  --dimension-z-index-modal:    450;
-  --dimension-z-index-floating: 500;
-  --dimension-z-index-tooltip:  750;`;
+  // ── z-index ─────────────────────────────────────────────────────────────
+  lines.push('  /* Z-index layers */');
+  for (const [key, token] of Object.entries(json['z-index'])) {
+    lines.push(`  --dimension-z-index-${key}: ${token.$value};`);
+  }
+  lines.push('');
 
   const output = [
-    '/* AUTO-GENERATED + HAND-AUTHORED. See scripts/generate-dimension-tokens.mjs */',
-    '/* Generated section: from src/json/dimensions/dimensions.tokens.json        */',
+    '/* AUTO-GENERATED. See scripts/generate-dimension-tokens.mjs */',
+    '/* Source: src/json/dimensions/dimensions.tokens.json        */',
     '',
     ':root {',
     ...lines,
-    handAuthored,
     '}',
     '',
   ].join('\n');

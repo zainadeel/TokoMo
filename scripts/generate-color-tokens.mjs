@@ -7,11 +7,11 @@ const __dirname = path.dirname(__filename);
 const ROOT_DIR = path.resolve(__dirname, '..');
 
 const SOURCES = {
-  semanticLight: path.join(ROOT_DIR, 'src/json/colors/semantic/light.tokens.json'),
-  semanticDark: path.join(ROOT_DIR, 'src/json/colors/semantic/dark.tokens.json'),
-  referenceHex: path.join(ROOT_DIR, 'src/json/colors/reference/hex.tokens.json'),
-  dataLight: path.join(ROOT_DIR, 'src/json/colors/data/light.tokens.json'),
-  dataDark: path.join(ROOT_DIR, 'src/json/colors/data/dark.tokens.json'),
+  semanticLight: path.join(ROOT_DIR, 'src/json/colors/semantic/color.semantic.light.tokens.json'),
+  semanticDark: path.join(ROOT_DIR, 'src/json/colors/semantic/color.semantic.dark.tokens.json'),
+  referenceHex: path.join(ROOT_DIR, 'src/json/colors/reference/color.reference.tokens.json'),
+  dataLight: path.join(ROOT_DIR, 'src/json/colors/data/color.data.light.tokens.json'),
+  dataDark: path.join(ROOT_DIR, 'src/json/colors/data/color.data.dark.tokens.json'),
 };
 
 const OUTPUT_FILE = path.join(ROOT_DIR, 'src/colors.css');

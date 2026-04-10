@@ -86,7 +86,7 @@ textarea:focus-visible,
 select:focus-visible,
 [tabindex]:focus-visible {
   outline: var(--dimension-stroke-width-025) solid var(--color-foreground-medium-brand);
-  outline-offset: var(--dimension-space-025);
+  outline-offset: var(--dimension-offset-025);
   transition: outline var(--effect-motion-short-2);
 }
 
