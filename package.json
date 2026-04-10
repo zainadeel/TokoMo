@@ -60,10 +60,10 @@
     "dev": "node scripts/build.mjs --watch"
   },
   "engines": {
-    "node": ">=18.0.0"
+    "node": ">=25.9.0"
   },
   "devDependencies": {
-    "chokidar": "^4.0.0"
+    "chokidar": "^5.0.0"
   },
   "sideEffects": [
     "**/*.css"
