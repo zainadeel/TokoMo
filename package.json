@@ -1,5 +1,5 @@
 {
-  "name": "@tokomo/tokens",
+  "name": "@ds-mo/tokens",
   "version": "0.1.0",
   "description": "TokoMo design tokens — colors, dimensions, typography, and effects as CSS custom properties, JSON, and TypeScript constants",
   "keywords": [
@@ -16,10 +16,12 @@
     "dark-mode"
   ],
   "homepage": "https://github.com/zainadeel/TokoMo#readme",
-  "bugs": "https://github.com/zainadeel/TokoMo/issues",
+  "bugs": {
+    "url": "https://github.com/zainadeel/TokoMo/issues"
+  },
   "repository": {
     "type": "git",
-    "url": "https://github.com/zainadeel/TokoMo.git"
+    "url": "git+https://github.com/zainadeel/TokoMo.git"
   },
   "license": "MIT",
   "type": "module",
@@ -48,9 +50,11 @@
     }
   },
   "files": [
-    "dist",
-    "src"
+    "dist"
   ],
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
     "build": "node scripts/build.mjs",
     "build:colors": "node scripts/generate-color-tokens.mjs",

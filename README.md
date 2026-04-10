@@ -1,15 +1,18 @@
-# @tokomo/tokens
+# @ds-mo/tokens
 
-Design tokens as CSS custom properties, JSON, and TypeScript constants.
+Design tokens as CSS custom properties, JSON, and TypeScript constants — the token foundation for the **CompoMo** design system.
+
+Part of the design system trilogy:
+**TokoMo** (`@ds-mo/tokens`) → **IcoMo** (`@ds-mo/icons`) → **CompoMo** (`@ds-mo/ui`)
 
 Figma-first: tokens are exported from Figma variables and built into CSS via generator scripts. Drop in new JSON, run the build, everything updates.
 
 ## Install
 
 ```bash
-npm install @tokomo/tokens
+npm install @ds-mo/tokens
 # or
-pnpm add @tokomo/tokens
+pnpm add @ds-mo/tokens
 
 # Local development (no npm publish needed):
 pnpm add file:../path/to/tokomo
@@ -21,29 +24,29 @@ pnpm add file:../path/to/tokomo
 
 ```css
 /* All tokens at once */
-@import '@tokomo/tokens';
+@import '@ds-mo/tokens';
 
 /* Or selectively */
-@import '@tokomo/tokens/colors';
-@import '@tokomo/tokens/dimensions';
-@import '@tokomo/tokens/typography';
-@import '@tokomo/tokens/effects';
+@import '@ds-mo/tokens/colors';
+@import '@ds-mo/tokens/dimensions';
+@import '@ds-mo/tokens/typography';
+@import '@ds-mo/tokens/effects';
 
 /* Optional: base styles (font loading, reduced-motion, focus rings) */
-@import '@tokomo/tokens/globals';
+@import '@ds-mo/tokens/globals';
 
 /* Optional: CSS reset */
-@import '@tokomo/tokens/reset';
+@import '@ds-mo/tokens/reset';
 ```
 
 ### JS / TypeScript (via bundler)
 
 ```ts
-import '@tokomo/tokens';
-import '@tokomo/tokens/globals';
+import '@ds-mo/tokens';
+import '@ds-mo/tokens/globals';
 
 // Type-safe token name constants
-import { colorBackgroundPrimary, dimensionSpace200 } from '@tokomo/tokens/ts';
+import { colorBackgroundPrimary, dimensionSpace200 } from '@ds-mo/tokens/ts';
 // value is just the CSS variable name string: '--color-background-primary'
 element.style.setProperty(colorBackgroundPrimary, 'red');
 ```
@@ -51,8 +54,8 @@ element.style.setProperty(colorBackgroundPrimary, 'red');
 ### JSON (for tooling, plugins, etc.)
 
 ```ts
-import tokens from '@tokomo/tokens/json';
-import colors from '@tokomo/tokens/json/colors';
+import tokens from '@ds-mo/tokens/json';
+import colors from '@ds-mo/tokens/json/colors';
 ```
 
 ## Theming
