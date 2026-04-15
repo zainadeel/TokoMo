@@ -59,6 +59,7 @@
     "build": "node scripts/build.mjs",
     "build:colors": "node scripts/generate-color-tokens.mjs",
     "build:json": "node scripts/generate-json-tokens.mjs",
+    "build:docs": "node scripts/build-docs.mjs",
     "build:ts": "node scripts/generate-ts-constants.mjs",
     "clean": "rm -rf dist",
     "dev": "node scripts/build.mjs --watch"

@@ -17,5 +17,8 @@ dist
 # Build
 *.tsbuildinfo
 
+# Generated docs (built from scripts/docs-template.html)
+docs/
+
 # Claude
 .claude/

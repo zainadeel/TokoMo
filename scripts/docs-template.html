@@ -1,0 +1,1058 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TokoMo — Token Browser</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+
+  <!-- Inlined token CSS — enables live var() resolution for swatches/previews -->
+  <style>/* @@TOKEN_CSS@@ */</style>
+
+  <!-- Token data injected by build-docs.mjs -->
+  <script>/* @@TOKEN_DATA@@ */</script>
+
+  <style>
+    /* ── UI design tokens ─────────────────────────────────────────────── */
+    :root {
+      --bg:       #ffffff;
+      --fg:       #000000;
+      --fg-muted: rgb(0 0 0 / 0.5);
+      --divider:  rgb(0 0 0 / 0.1);
+      color-scheme: light;
+    }
+    [data-theme="dark"] {
+      --bg:       #000000;
+      --fg:       #ffffff;
+      --fg-muted: rgb(255 255 255 / 0.5);
+      --divider:  rgb(255 255 255 / 0.1);
+      color-scheme: dark;
+    }
+
+    /* ── Reset / base ─────────────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    ::selection { background: var(--divider); color: inherit; }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--fg);
+      font-size: 12px;
+      line-height: 16px;
+      min-height: 100dvh;
+    }
+
+    /* ── Toolbar ──────────────────────────────────────────────────────── */
+    .toolbar {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      align-items: center;
+      gap: 16px;
+      height: 48px;
+      padding: 0 20px;
+      background: var(--bg);
+      border-bottom: 1px solid var(--divider);
+    }
+
+    .logo {
+      font-size: 12px;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    /* ── Search ───────────────────────────────────────────────────────── */
+    .search-wrap {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .search {
+      width: 0; /* driven by JS sizer */
+      padding: 0;
+      border: none;
+      border-radius: 0;
+      background: transparent;
+      color: var(--fg);
+      font-size: 12px;
+      line-height: 16px;
+      font-family: inherit;
+      text-align: center;
+      outline: none;
+      -webkit-appearance: none;
+      appearance: none;
+    }
+    .search::placeholder { color: var(--fg-muted); }
+    .search::-webkit-search-cancel-button { -webkit-appearance: none; }
+    .search-count {
+      font-size: 12px;
+      line-height: 16px;
+      color: var(--fg-muted);
+      white-space: nowrap;
+      display: none;
+    }
+    .search-count.visible { display: block; }
+
+    /* ── Controls ─────────────────────────────────────────────────────── */
+    .controls {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      justify-content: flex-end;
+    }
+    .text-toggle {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .toggle-btn {
+      background: none;
+      border: none;
+      padding: 0;
+      cursor: pointer;
+      font-size: 12px;
+      font-family: inherit;
+      color: var(--fg-muted);
+      line-height: 1;
+      white-space: nowrap;
+    }
+    .toggle-btn.active { color: var(--fg); }
+    .vdivider {
+      width: 1px;
+      height: 12px;
+      background: var(--divider);
+      flex-shrink: 0;
+    }
+
+    /* ── Sub-toolbar (group filters) ──────────────────────────────────── */
+    .sub-toolbar {
+      position: sticky;
+      top: 48px;
+      z-index: 19;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      height: 40px;
+      padding: 0 20px;
+      background: var(--bg);
+      border-bottom: 1px solid var(--divider);
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+    .sub-toolbar::-webkit-scrollbar { display: none; }
+
+    .sub-btn {
+      background: none;
+      border: none;
+      padding: 0;
+      cursor: pointer;
+      font-size: 12px;
+      font-family: inherit;
+      color: var(--fg-muted);
+      white-space: nowrap;
+      line-height: 1;
+      flex-shrink: 0;
+    }
+    .sub-btn.active { color: var(--fg); }
+
+    /* ── Content ──────────────────────────────────────────────────────── */
+    #content {
+      padding: 10px 12px 64px;
+    }
+
+    /* ── Color grid ───────────────────────────────────────────────────── */
+    .color-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(108px, 1fr));
+      gap: 2px;
+    }
+
+    .color-card {
+      display: flex;
+      flex-direction: column;
+      cursor: pointer;
+      outline: none;
+      -webkit-user-select: none;
+      user-select: none;
+      border-radius: 0;
+      position: relative;
+    }
+    .color-card:hover,
+    .color-card:focus-visible {
+      background: var(--divider);
+    }
+    .color-card:focus-visible {
+      box-shadow: inset 0 0 0 2px var(--fg);
+    }
+
+    .color-swatch {
+      height: 36px;
+      position: relative;
+      /* Checkerboard shows through transparent swatches */
+      background-image: repeating-conic-gradient(
+        rgb(0 0 0 / 0.06) 0% 25%, transparent 0% 50%
+      );
+      background-size: 8px 8px;
+      background-color: var(--sc, transparent);
+    }
+
+    .color-label {
+      font-size: 9px;
+      line-height: 1.4;
+      color: var(--fg-muted);
+      padding: 4px 5px 6px;
+      word-break: break-all;
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    /* ── Token list (dimensions, typography, effects) ─────────────────── */
+    .token-list {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .group-header {
+      font-size: 9px;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--fg-muted);
+      padding: 20px 4px 6px;
+    }
+    .group-header:first-child {
+      padding-top: 8px;
+    }
+
+    .token-row {
+      display: grid;
+      grid-template-columns: 180px 1fr auto;
+      align-items: center;
+      gap: 16px;
+      padding: 5px 4px;
+      cursor: pointer;
+      outline: none;
+      -webkit-user-select: none;
+      user-select: none;
+      min-height: 36px;
+    }
+    .token-row:hover,
+    .token-row:focus-visible {
+      background: var(--divider);
+    }
+    .token-row:focus-visible {
+      box-shadow: inset 0 0 0 1px var(--fg);
+    }
+
+    /* Visual column */
+    .tok-visual {
+      display: flex;
+      align-items: center;
+      overflow: hidden;
+    }
+
+    /* Name column */
+    .tok-name {
+      font-size: 12px;
+      color: var(--fg);
+      font-family: 'SF Mono', ui-monospace, 'Fira Code', monospace;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    /* Value column */
+    .tok-value {
+      font-size: 12px;
+      color: var(--fg-muted);
+      font-family: 'SF Mono', ui-monospace, 'Fira Code', monospace;
+      white-space: nowrap;
+      text-align: right;
+      max-width: 260px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    /* ── Dimension visuals ────────────────────────────────────────────── */
+    .dim-bar-track {
+      width: 160px;
+      height: 6px;
+      position: relative;
+      flex-shrink: 0;
+    }
+    .dim-bar-fill {
+      height: 100%;
+      background: var(--fg);
+      min-width: 1px;
+    }
+    .dim-bar-neg {
+      height: 100%;
+      background: var(--fg-muted);
+      min-width: 1px;
+    }
+
+    .dim-radius-box {
+      width: 24px;
+      height: 24px;
+      border: 1px solid var(--fg);
+      flex-shrink: 0;
+    }
+
+    .dim-stroke-line {
+      width: 80px;
+      background: var(--fg);
+      flex-shrink: 0;
+    }
+
+    .dim-size-box {
+      background: var(--fg-muted);
+      flex-shrink: 0;
+    }
+
+    .dim-zindex-pill {
+      font-size: 12px;
+      color: var(--fg-muted);
+      font-family: 'SF Mono', ui-monospace, monospace;
+    }
+
+    .dim-layout-bar {
+      height: 6px;
+      background: var(--fg-muted);
+      flex-shrink: 0;
+      opacity: 0.5;
+    }
+
+    /* ── Typography visuals ───────────────────────────────────────────── */
+    .typo-sample {
+      color: var(--fg);
+      font-family: 'Inter', system-ui, sans-serif;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 160px;
+      line-height: 1.2;
+    }
+
+    .textstyle-row {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      align-items: center;
+      gap: 16px;
+      padding: 8px 4px;
+      cursor: pointer;
+      outline: none;
+      -webkit-user-select: none;
+      user-select: none;
+      min-height: 48px;
+    }
+    .textstyle-row:hover,
+    .textstyle-row:focus-visible {
+      background: var(--divider);
+    }
+    .textstyle-row:focus-visible {
+      box-shadow: inset 0 0 0 1px var(--fg);
+    }
+    .textstyle-sample {
+      font-family: 'Inter', system-ui, sans-serif;
+      color: var(--fg);
+      overflow: hidden;
+    }
+    .textstyle-classname {
+      font-size: 12px;
+      color: var(--fg-muted);
+      font-family: 'SF Mono', ui-monospace, monospace;
+      white-space: nowrap;
+    }
+
+    /* ── Effect visuals ───────────────────────────────────────────────── */
+    .fx-duration-track {
+      width: 160px;
+      height: 4px;
+      background: var(--divider);
+      position: relative;
+      flex-shrink: 0;
+    }
+    .fx-duration-fill {
+      height: 100%;
+      background: var(--fg);
+      min-width: 2px;
+    }
+
+    .fx-blur-box {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: var(--fg-muted);
+      flex-shrink: 0;
+    }
+
+    .fx-elevation-box {
+      width: 32px;
+      height: 20px;
+      background: var(--bg);
+      flex-shrink: 0;
+    }
+
+    .fx-easing-label {
+      font-size: 11px;
+      color: var(--fg-muted);
+      font-family: 'SF Mono', ui-monospace, monospace;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 160px;
+    }
+
+    /* ── Empty state ──────────────────────────────────────────────────── */
+    .empty-state {
+      padding: 64px 0;
+      text-align: center;
+      color: var(--fg-muted);
+    }
+    .empty-state p { font-size: 12px; }
+    .empty-state small { font-size: 12px; opacity: 0.7; }
+
+    /* ── Toast ────────────────────────────────────────────────────────── */
+    .toast {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%) translateY(12px);
+      background: var(--fg);
+      color: var(--bg);
+      padding: 8px 14px;
+      border-radius: 0;
+      font-size: 12px;
+      font-family: 'SF Mono', ui-monospace, 'Fira Code', monospace;
+      white-space: nowrap;
+      max-width: calc(100vw - 40px);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s, transform 0.2s;
+      z-index: 100;
+    }
+    .toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+  </style>
+</head>
+<body>
+
+<!-- Toolbar -->
+<nav class="toolbar" role="banner">
+  <span class="logo">@ds-mo/tokens</span>
+
+  <div class="search-wrap">
+    <input
+      class="search"
+      type="search"
+      id="search"
+      placeholder=""
+      autocomplete="off"
+      spellcheck="false"
+      aria-label="Search tokens"
+    >
+    <span class="search-count" id="search-count" aria-live="polite"></span>
+  </div>
+
+  <div class="controls">
+    <div class="text-toggle" id="section-toggle" role="group" aria-label="Token section">
+      <button class="toggle-btn" data-section="colors">Colors</button>
+      <button class="toggle-btn" data-section="dimensions">Dimensions</button>
+      <button class="toggle-btn" data-section="typography">Typography</button>
+      <button class="toggle-btn" data-section="effects">Effects</button>
+    </div>
+    <div class="vdivider" aria-hidden="true"></div>
+    <div class="text-toggle" role="group" aria-label="Color theme">
+      <button class="toggle-btn" id="theme-light-btn">Light</button>
+      <button class="toggle-btn" id="theme-dark-btn">Dark</button>
+    </div>
+  </div>
+</nav>
+
+<!-- Sub-toolbar (group filters) -->
+<div class="sub-toolbar" id="sub-toolbar" role="group" aria-label="Group filter"></div>
+
+<!-- Content -->
+<main>
+  <div id="content"></div>
+</main>
+
+<div class="toast" id="toast" role="status" aria-live="assertive"></div>
+
+<script>
+// ── Group definitions ─────────────────────────────────────────────────────────
+
+const GROUPS = {
+  colors: [
+    { id: 'all',       label: 'All' },
+    { id: 'reference', label: 'Reference' },
+    { id: 'semantic',  label: 'Semantic' },
+    { id: 'domain',    label: 'Domain' },
+    { id: 'data',      label: 'Data' },
+  ],
+  dimensions: [
+    { id: 'all',         label: 'All' },
+    { id: 'space',       label: 'Space' },
+    { id: 'radius',      label: 'Radius' },
+    { id: 'stroke',      label: 'Stroke' },
+    { id: 'size',        label: 'Size' },
+    { id: 'iconography', label: 'Iconography' },
+    { id: 'layout',      label: 'Layout' },
+    { id: 'z-index',     label: 'Z-Index' },
+  ],
+  typography: [
+    { id: 'all',              label: 'All' },
+    { id: 'fontsize',         label: 'Size' },
+    { id: 'lineheight',       label: 'Line Height' },
+    { id: 'weight',           label: 'Weight' },
+    { id: 'letterspacing',    label: 'Letter Spacing' },
+    { id: 'paragraphspacing', label: 'Paragraph Spacing' },
+    { id: 'textstyle',        label: 'Text Styles' },
+  ],
+  effects: [
+    { id: 'all',        label: 'All' },
+    { id: 'duration',   label: 'Duration' },
+    { id: 'delay',      label: 'Delay' },
+    { id: 'easing',     label: 'Easing' },
+    { id: 'blur',       label: 'Blur' },
+    { id: 'elevation',  label: 'Elevation' },
+    { id: 'motion',     label: 'Motion' },
+    { id: 'transition', label: 'Transition' },
+  ],
+};
+
+// ── State ─────────────────────────────────────────────────────────────────────
+
+let section  = localStorage.getItem('tokomo-section') || 'colors';
+let group    = 'all';
+let query    = '';
+let theme    = localStorage.getItem('tokomo-theme') || 'light';
+
+// ── Refs ──────────────────────────────────────────────────────────────────────
+
+const contentEl    = document.getElementById('content');
+const searchEl     = document.getElementById('search');
+const searchCount  = document.getElementById('search-count');
+const subToolbar   = document.getElementById('sub-toolbar');
+const toast        = document.getElementById('toast');
+const themeLightBtn = document.getElementById('theme-light-btn');
+const themeDarkBtn  = document.getElementById('theme-dark-btn');
+
+// ── Search sizer ──────────────────────────────────────────────────────────────
+
+const sizer = document.createElement('span');
+sizer.setAttribute('aria-hidden', 'true');
+sizer.style.cssText = 'position:fixed;top:-9999px;visibility:hidden;white-space:pre;font-size:12px;font-family:Inter,system-ui,sans-serif;pointer-events:none;';
+document.body.appendChild(sizer);
+
+function syncSearchWidth() {
+  sizer.textContent = searchEl.value || searchEl.placeholder;
+  searchEl.style.width = Math.ceil(sizer.offsetWidth) + 4 + 'px';
+}
+
+// ── Theme ─────────────────────────────────────────────────────────────────────
+
+function applyTheme(t) {
+  theme = t;
+  document.documentElement.setAttribute('data-theme', t);
+  themeLightBtn.classList.toggle('active', t === 'light');
+  themeDarkBtn.classList.toggle('active', t === 'dark');
+}
+
+applyTheme(theme);
+themeLightBtn.addEventListener('click', () => { applyTheme('light'); localStorage.setItem('tokomo-theme', 'light'); });
+themeDarkBtn.addEventListener('click',  () => { applyTheme('dark');  localStorage.setItem('tokomo-theme', 'dark'); });
+
+// ── Section toggle ────────────────────────────────────────────────────────────
+
+document.getElementById('section-toggle').addEventListener('click', e => {
+  const btn = e.target.closest('[data-section]');
+  if (!btn) return;
+  switchSection(btn.dataset.section);
+});
+
+function switchSection(s) {
+  section = s;
+  group = 'all';
+  query = '';
+  searchEl.value = '';
+  localStorage.setItem('tokomo-section', s);
+
+  document.querySelectorAll('#section-toggle .toggle-btn').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.section === s);
+  });
+
+  updateSubToolbar();
+  updateSearchPlaceholder();
+  syncSearchWidth();
+  render();
+}
+
+// ── Sub-toolbar ───────────────────────────────────────────────────────────────
+
+function updateSubToolbar() {
+  const groups = GROUPS[section] || [];
+  subToolbar.innerHTML = '';
+  for (const g of groups) {
+    const btn = document.createElement('button');
+    btn.className = 'sub-btn' + (g.id === group ? ' active' : '');
+    btn.textContent = g.label;
+    btn.dataset.group = g.id;
+    btn.addEventListener('click', () => {
+      group = g.id;
+      subToolbar.querySelectorAll('.sub-btn').forEach(b => {
+        b.classList.toggle('active', b.dataset.group === group);
+      });
+      render();
+    });
+    subToolbar.appendChild(btn);
+  }
+}
+
+// ── Search ────────────────────────────────────────────────────────────────────
+
+searchEl.addEventListener('input', e => {
+  query = e.target.value.trim().toLowerCase();
+  syncSearchWidth();
+  render();
+});
+
+function updateSearchPlaceholder() {
+  const data = TOKEN_DATA[section] || [];
+  const label = { colors: 'colors', dimensions: 'dimensions', typography: 'tokens', effects: 'effects' }[section] || 'tokens';
+  searchEl.placeholder = `Search ${data.length} ${label}`;
+}
+
+// ── Render ────────────────────────────────────────────────────────────────────
+
+function getFilteredTokens() {
+  const data = TOKEN_DATA[section] || [];
+  return data.filter(t => {
+    if (group !== 'all' && t.group !== group) return false;
+    if (query && !t.name.toLowerCase().includes(query) && !t.label.toLowerCase().includes(query)) return false;
+    return true;
+  });
+}
+
+function updateCount(n, total) {
+  if (query || group !== 'all') {
+    searchCount.textContent = `${n}/${total}`;
+    searchCount.classList.add('visible');
+  } else {
+    searchCount.classList.remove('visible');
+  }
+}
+
+function render() {
+  const all = TOKEN_DATA[section] || [];
+  const filtered = getFilteredTokens();
+  updateCount(filtered.length, all.length);
+
+  if (filtered.length === 0) {
+    contentEl.innerHTML = `<div class="empty-state"><p>No tokens match &ldquo;${escHtml(query)}&rdquo;</p><small>Try a different search</small></div>`;
+    return;
+  }
+
+  switch (section) {
+    case 'colors':     renderColors(filtered); break;
+    case 'dimensions': renderDimensions(filtered); break;
+    case 'typography': renderTypography(filtered); break;
+    case 'effects':    renderEffects(filtered); break;
+  }
+}
+
+// ── Colors ────────────────────────────────────────────────────────────────────
+
+function renderColors(tokens) {
+  const frag = document.createDocumentFragment();
+
+  for (const t of tokens) {
+    const card = document.createElement('div');
+    card.className = 'color-card';
+    card.setAttribute('tabindex', '0');
+    card.setAttribute('role', 'button');
+    card.setAttribute('aria-label', `${t.name} — click to copy`);
+    // --sc is the swatch color; resolves through inlined token CSS
+    card.innerHTML = `
+      <div class="color-swatch" style="--sc:var(${t.name})"></div>
+      <span class="color-label">${escHtml(t.label)}</span>`;
+    addCopyHandler(card, `var(${t.name})`, t.name);
+    frag.appendChild(card);
+  }
+
+  contentEl.className = 'color-grid';
+  contentEl.innerHTML = '';
+  contentEl.appendChild(frag);
+}
+
+// ── Dimensions ────────────────────────────────────────────────────────────────
+
+function renderDimensions(tokens) {
+  // Compute max px per group for scaling bars
+  const maxPx = {};
+  for (const t of tokens) {
+    if (t.px != null && t.px > 0) {
+      if (!maxPx[t.group] || t.px > maxPx[t.group]) maxPx[t.group] = t.px;
+    }
+  }
+
+  const frag = document.createDocumentFragment();
+  const showHeaders = group === 'all';
+  let lastGroup = null;
+
+  for (const t of tokens) {
+    if (showHeaders && t.group !== lastGroup) {
+      const h = document.createElement('div');
+      h.className = 'group-header';
+      h.textContent = t.group;
+      frag.appendChild(h);
+      lastGroup = t.group;
+    }
+
+    const row = document.createElement('div');
+    row.className = 'token-row';
+    row.setAttribute('tabindex', '0');
+    row.setAttribute('role', 'button');
+    row.setAttribute('aria-label', `${t.name} — click to copy`);
+
+    row.innerHTML = `
+      <div class="tok-visual">${dimVisual(t, maxPx[t.group] || 1)}</div>
+      <span class="tok-name">${escHtml(t.name)}</span>
+      <span class="tok-value">${escHtml(formatDimValue(t))}</span>`;
+    addCopyHandler(row, `var(${t.name})`, t.name);
+    frag.appendChild(row);
+  }
+
+  contentEl.className = 'token-list';
+  contentEl.innerHTML = '';
+  contentEl.appendChild(frag);
+}
+
+function dimVisual(t, maxPx) {
+  const px = t.px;
+
+  switch (t.group) {
+    case 'space':
+    case 'offset': {
+      if (px == null) return '';
+      if (px === 0) return `<div class="dim-bar-track"><div class="dim-bar-fill" style="width:1px;opacity:0.2"></div></div>`;
+      const w = Math.max(1, Math.round((Math.abs(px) / maxPx) * 152));
+      const cls = px < 0 ? 'dim-bar-neg' : 'dim-bar-fill';
+      return `<div class="dim-bar-track"><div class="${cls}" style="width:${w}px"></div></div>`;
+    }
+    case 'radius': {
+      const rad = px != null && px !== 9999 ? `${Math.min(px, 12)}px` : '50%';
+      return `<div class="dim-radius-box" style="border-radius:${rad}"></div>`;
+    }
+    case 'stroke': {
+      if (px == null) return '';
+      const h = Math.max(1, Math.min(px, 6));
+      return `<div class="dim-stroke-line" style="height:${h}px"></div>`;
+    }
+    case 'size':
+    case 'iconography': {
+      if (px == null) return '';
+      const s = Math.min(px, 40);
+      return `<div class="dim-size-box" style="width:${s}px;height:${s}px"></div>`;
+    }
+    case 'layout': {
+      if (px == null) return '<div class="dim-layout-bar" style="width:80px"></div>';
+      const w = Math.max(4, Math.round((Math.min(px, 800) / 800) * 152));
+      return `<div class="dim-layout-bar" style="width:${w}px"></div>`;
+    }
+    case 'z-index':
+    case 'scale':
+      return `<div class="dim-zindex-pill">${escHtml(t.value)}</div>`;
+    default:
+      return '';
+  }
+}
+
+function formatDimValue(t) {
+  if (t.px != null) {
+    if (t.group === 'z-index' || t.group === 'scale') return t.value;
+    if (t.px === 9999) return '9999px (∞)';
+    return t.px + 'px';
+  }
+  return t.value || '';
+}
+
+// ── Typography ────────────────────────────────────────────────────────────────
+
+function renderTypography(tokens) {
+  const frag = document.createDocumentFragment();
+  const showHeaders = group === 'all';
+  let lastGroup = null;
+
+  for (const t of tokens) {
+    if (showHeaders && t.group !== lastGroup) {
+      const h = document.createElement('div');
+      h.className = 'group-header';
+      h.textContent = typoGroupLabel(t.group);
+      frag.appendChild(h);
+      lastGroup = t.group;
+    }
+
+    if (t.group === 'textstyle') {
+      frag.appendChild(makeTextstyleRow(t));
+    } else {
+      frag.appendChild(makeTypoRow(t));
+    }
+  }
+
+  contentEl.className = 'token-list';
+  contentEl.innerHTML = '';
+  contentEl.appendChild(frag);
+}
+
+function typoGroupLabel(g) {
+  return { fontsize: 'Font Size', lineheight: 'Line Height', weight: 'Font Weight',
+           letterspacing: 'Letter Spacing', paragraphspacing: 'Paragraph Spacing',
+           textstyle: 'Text Styles', other: 'Other' }[g] || g;
+}
+
+function makeTypoRow(t) {
+  const row = document.createElement('div');
+  row.className = 'token-row';
+  row.setAttribute('tabindex', '0');
+  row.setAttribute('role', 'button');
+  row.setAttribute('aria-label', `${t.name} — click to copy`);
+
+  row.innerHTML = `
+    <div class="tok-visual">${typoVisual(t)}</div>
+    <span class="tok-name">${escHtml(t.name)}</span>
+    <span class="tok-value">${escHtml(t.value || '')}</span>`;
+  addCopyHandler(row, `var(${t.name})`, t.name);
+  return row;
+}
+
+function typoVisual(t) {
+  switch (t.group) {
+    case 'fontsize': {
+      const sz = Math.min(t.numeric || 12, 44);
+      // Cap display at 32px for very large sizes; show scaled down
+      const display = sz > 32 ? 32 : sz;
+      return `<span class="typo-sample" style="font-size:${display}px;opacity:${sz > 32 ? 0.7 : 1}">Ag</span>`;
+    }
+    case 'lineheight': {
+      const lh = t.value || '16px';
+      return `<span class="typo-sample" style="font-size:9px;line-height:${lh};display:inline-block;max-width:160px">Line one<br>Line two</span>`;
+    }
+    case 'weight': {
+      return `<span class="typo-sample" style="font-size:16px;font-weight:${t.numeric || 400}">Ag</span>`;
+    }
+    case 'letterspacing': {
+      return `<span class="typo-sample" style="font-size:11px;letter-spacing:${t.value || '0'}">ABCDEF</span>`;
+    }
+    case 'paragraphspacing': {
+      if (!t.numeric) return `<span class="typo-sample" style="font-size:11px">—</span>`;
+      const h = Math.min(t.numeric || 0, 12);
+      return `<div style="display:flex;flex-direction:column;gap:0;font-size:9px;color:var(--fg)"><div>Paragraph one</div><div style="height:${h}px"></div><div>Paragraph two</div></div>`;
+    }
+    default:
+      return `<span class="typo-sample">${escHtml(t.value || '')}</span>`;
+  }
+}
+
+function makeTextstyleRow(t) {
+  const row = document.createElement('div');
+  row.className = 'textstyle-row';
+  row.setAttribute('tabindex', '0');
+  row.setAttribute('role', 'button');
+  row.setAttribute('aria-label', `${t.name} — click to copy class name`);
+
+  const sampleText = textstyleSample(t.label);
+  row.innerHTML = `
+    <div class="textstyle-sample ${escHtml(t.label)}">${escHtml(sampleText)}</div>
+    <span class="textstyle-classname">${escHtml(t.name)}</span>`;
+  addCopyHandler(row, t.name, t.label);
+  return row;
+}
+
+function textstyleSample(cls) {
+  if (cls.includes('display')) return 'Display';
+  if (cls.includes('title-large')) return 'Title Large';
+  if (cls.includes('title-medium')) return 'Title Medium';
+  if (cls.includes('title-small')) return 'Title Small';
+  if (cls.includes('body-large')) return 'Body Large — The quick brown fox';
+  if (cls.includes('body-medium')) return 'Body Medium — The quick brown fox';
+  if (cls.includes('body-small')) return 'Body Small — The quick brown fox jumps over the lazy dog';
+  if (cls.includes('caption')) return 'CAPTION TEXT';
+  return 'Sample text';
+}
+
+// ── Effects ───────────────────────────────────────────────────────────────────
+
+function renderEffects(tokens) {
+  const maxDuration = Math.max(...tokens.filter(t => t.group === 'duration').map(t => t.numeric || 0), 1);
+
+  const frag = document.createDocumentFragment();
+  const showHeaders = group === 'all';
+  let lastGroup = null;
+
+  for (const t of tokens) {
+    if (showHeaders && t.group !== lastGroup) {
+      const h = document.createElement('div');
+      h.className = 'group-header';
+      h.textContent = fxGroupLabel(t.group);
+      frag.appendChild(h);
+      lastGroup = t.group;
+    }
+
+    const row = document.createElement('div');
+    row.className = 'token-row';
+    row.setAttribute('tabindex', '0');
+    row.setAttribute('role', 'button');
+    row.setAttribute('aria-label', `${t.name} — click to copy`);
+
+    row.innerHTML = `
+      <div class="tok-visual">${fxVisual(t, maxDuration)}</div>
+      <span class="tok-name">${escHtml(t.name)}</span>
+      <span class="tok-value">${escHtml(fxDisplayValue(t))}</span>`;
+    addCopyHandler(row, `var(${t.name})`, t.name);
+    frag.appendChild(row);
+  }
+
+  contentEl.className = 'token-list';
+  contentEl.innerHTML = '';
+  contentEl.appendChild(frag);
+}
+
+function fxGroupLabel(g) {
+  return { duration: 'Duration', delay: 'Delay', easing: 'Easing', blur: 'Blur',
+           elevation: 'Elevation', motion: 'Motion', transition: 'Transition', other: 'Other' }[g] || g;
+}
+
+function fxVisual(t, maxDuration) {
+  switch (t.group) {
+    case 'duration':
+    case 'delay': {
+      const ms = t.numeric || 0;
+      const w = ms === 0 ? 2 : Math.max(2, Math.round((ms / Math.max(maxDuration, 1)) * 152));
+      return `<div class="fx-duration-track"><div class="fx-duration-fill" style="width:${w}px"></div></div>`;
+    }
+    case 'easing': {
+      // Extract cubic-bezier values for a mini SVG preview
+      const cb = t.value && t.value.match(/cubic-bezier\(([\d., -]+)\)/);
+      if (cb) {
+        const [x1, y1, x2, y2] = cb[1].split(',').map(Number);
+        return makeBezierSvg(x1, y1, x2, y2);
+      }
+      return `<div class="fx-easing-label">${escHtml(t.value || '')}</div>`;
+    }
+    case 'blur': {
+      const b = t.numeric || 4;
+      const blurPx = Math.min(b, 16);
+      return `<div class="fx-blur-box" style="filter:blur(${blurPx}px);opacity:0.6"></div>`;
+    }
+    case 'elevation': {
+      // Preview box with the actual shadow applied
+      return `<div class="fx-elevation-box" style="box-shadow:var(${t.name})"></div>`;
+    }
+    default:
+      return '';
+  }
+}
+
+function makeBezierSvg(x1, y1, x2, y2) {
+  // 40×24 SVG showing the cubic-bezier curve
+  const W = 40, H = 24;
+  // Bezier goes from (0,H) to (W,0) in SVG coords (y-flipped)
+  const cx1 = x1 * W, cy1 = H - y1 * H;
+  const cx2 = x2 * W, cy2 = H - y2 * H;
+  return `<svg width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" fill="none" style="flex-shrink:0">
+    <path d="M0,${H} C${cx1.toFixed(1)},${cy1.toFixed(1)} ${cx2.toFixed(1)},${cy2.toFixed(1)} ${W},0"
+      stroke="currentColor" stroke-width="1.5" opacity="0.6"/>
+  </svg>`;
+}
+
+function fxDisplayValue(t) {
+  if (t.group === 'duration' || t.group === 'delay') return t.value || '';
+  if (t.group === 'easing') return t.value || '';
+  if (t.group === 'blur') return t.value || '';
+  if (t.group === 'motion') return t.value || '';
+  if (t.group === 'elevation') return '(multi-layer)';
+  if (t.group === 'transition') {
+    // Shorten verbose transition values
+    const short = t.label.replace('transition-interaction-', '').replace('--effect-', '');
+    return short;
+  }
+  return t.value || '';
+}
+
+// ── Copy ──────────────────────────────────────────────────────────────────────
+
+let toastTimer = null;
+
+function addCopyHandler(el, copyText, label) {
+  const doCopy = () => {
+    const done = () => {
+      el.style.background = 'var(--divider)';
+      setTimeout(() => { el.style.background = ''; }, 600);
+      showToast(copyText);
+    };
+    if (navigator.clipboard?.writeText) {
+      navigator.clipboard.writeText(copyText).then(done).catch(() => fallbackCopy(copyText, done));
+    } else {
+      fallbackCopy(copyText, done);
+    }
+  };
+  el.addEventListener('click', doCopy);
+  el.addEventListener('keydown', e => {
+    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); doCopy(); }
+  });
+}
+
+function fallbackCopy(text, cb) {
+  const el = document.createElement('textarea');
+  el.value = text;
+  el.style.cssText = 'position:fixed;opacity:0;pointer-events:none';
+  document.body.appendChild(el);
+  el.select();
+  try { document.execCommand('copy'); } catch (_) {}
+  document.body.removeChild(el);
+  cb();
+}
+
+function showToast(msg) {
+  toast.textContent = msg;
+  toast.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => toast.classList.remove('show'), 2800);
+}
+
+// ── Utility ───────────────────────────────────────────────────────────────────
+
+function escHtml(str) {
+  if (!str) return '';
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
+}
+
+// ── Init ──────────────────────────────────────────────────────────────────────
+
+// Apply saved section button state
+document.querySelectorAll('#section-toggle .toggle-btn').forEach(btn => {
+  btn.classList.toggle('active', btn.dataset.section === section);
+});
+
+updateSubToolbar();
+updateSearchPlaceholder();
+syncSearchWidth();
+render();
+</script>
+</body>
+</html>
