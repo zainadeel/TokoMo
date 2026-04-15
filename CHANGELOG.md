@@ -1,9 +1,30 @@
 # Changelog
 
-All notable changes to `@tokomo/tokens` are documented here.
+All notable changes to `@ds-mo/tokens` are documented here.
 
 Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 Versioning follows [Semantic Versioning](https://semver.org/).
+
+---
+
+## [0.2.0] — 2026-04-15
+
+### Added
+
+- **Offset tokens** — `--dimension-offset-*` for use in `transform` and `background-position`. Includes positive and negative variants mirroring the spacing scale.
+- **Scale tokens** — `--dimension-scale-100` (1) and `--dimension-scale-subtle` (0.99) for `transform: scale()`.
+- **Z-index tokens** — `--dimension-z-index-base/raised/overlay/modal/floating/tooltip` replacing magic numbers in components.
+- **Token browser** — self-contained GitHub Pages site (`npm run build:docs`) for browsing all 692 tokens by category. Deployed automatically on push to `main`.
+
+### Fixed
+
+- **Elevation color references** — `--effect-shadow-*` and `--effect-highlight-*` tokens were referencing non-existent `--color-surface-shadow/highlight` variables. Corrected to `--color-elevation-shadow/highlight` as defined in the semantic color JSON. Shadows were silently rendering as `none` for any consumer using the elevation tokens.
+
+### Changed
+
+- **Package scope renamed** from `@tokomo/tokens` to `@ds-mo/tokens` to align with the design system monorepo convention (`@ds-mo/icons`, `@ds-mo/ui`).
+- **Color JSON filenames** standardised — token JSON files renamed to follow a consistent `color.{type}.{variant}.tokens.json` pattern.
+- **Node engine** requirement raised to `>=25.9.0` (chokidar v5 requirement for watch mode).
 
 ---
 
