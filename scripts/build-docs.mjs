@@ -89,14 +89,6 @@ function toPx(value) {
 function getColorGroup(name) {
   if (name.startsWith('--color-reference-')) return 'reference';
   if (name.startsWith('--color-data-'))      return 'data';
-  if (
-    name.startsWith('--color-driver-status-')   ||
-    name.startsWith('--color-entity-')           ||
-    name.startsWith('--color-geofence-')         ||
-    name.startsWith('--color-location-marker-')  ||
-    name.startsWith('--color-safety-score-')     ||
-    name.startsWith('--color-settings-')
-  ) return 'domain';
   return 'semantic';
 }
 

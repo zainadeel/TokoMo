@@ -192,12 +192,23 @@
     .color-swatch {
       height: 36px;
       position: relative;
-      /* Checkerboard shows through transparent swatches */
+    }
+    /* Checkerboard sits behind the color — only visible through transparent swatches */
+    .color-swatch::before {
+      content: '';
+      position: absolute;
+      inset: 0;
       background-image: repeating-conic-gradient(
         rgb(0 0 0 / 0.06) 0% 25%, transparent 0% 50%
       );
       background-size: 8px 8px;
-      background-color: var(--sc, transparent);
+    }
+    /* Actual color renders on top — covers checkerboard for opaque tokens */
+    .color-swatch::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: var(--sc, transparent);
     }
 
     .color-label {
@@ -224,7 +235,7 @@
       letter-spacing: 0.06em;
       text-transform: uppercase;
       color: var(--fg-muted);
-      padding: 20px 4px 6px;
+      padding: 20px 8px 6px;
     }
     .group-header:first-child {
       padding-top: 8px;
@@ -235,7 +246,7 @@
       grid-template-columns: 180px 1fr auto;
       align-items: center;
       gap: 16px;
-      padding: 5px 4px;
+      padding: 5px 8px;
       cursor: pointer;
       outline: none;
       -webkit-user-select: none;
@@ -344,7 +355,7 @@
       grid-template-columns: 1fr auto;
       align-items: center;
       gap: 16px;
-      padding: 8px 4px;
+      padding: 8px 8px;
       cursor: pointer;
       outline: none;
       -webkit-user-select: none;
@@ -497,7 +508,6 @@ const GROUPS = {
     { id: 'all',       label: 'All' },
     { id: 'reference', label: 'Reference' },
     { id: 'semantic',  label: 'Semantic' },
-    { id: 'domain',    label: 'Domain' },
     { id: 'data',      label: 'Data' },
   ],
   dimensions: [
@@ -510,15 +520,7 @@ const GROUPS = {
     { id: 'layout',      label: 'Layout' },
     { id: 'z-index',     label: 'Z-Index' },
   ],
-  typography: [
-    { id: 'all',              label: 'All' },
-    { id: 'fontsize',         label: 'Size' },
-    { id: 'lineheight',       label: 'Line Height' },
-    { id: 'weight',           label: 'Weight' },
-    { id: 'letterspacing',    label: 'Letter Spacing' },
-    { id: 'paragraphspacing', label: 'Paragraph Spacing' },
-    { id: 'textstyle',        label: 'Text Styles' },
-  ],
+  typography: [],
   effects: [
     { id: 'all',        label: 'All' },
     { id: 'duration',   label: 'Duration' },
@@ -603,6 +605,7 @@ function switchSection(s) {
 function updateSubToolbar() {
   const groups = GROUPS[section] || [];
   subToolbar.innerHTML = '';
+  subToolbar.style.display = groups.length ? '' : 'none';
   for (const g of groups) {
     const btn = document.createElement('button');
     btn.className = 'sub-btn' + (g.id === group ? ' active' : '');
