@@ -6,6 +6,13 @@ updates:
       interval: monthly
     labels:
       - dependencies
+    commit-message:
+      prefix: chore
+      include: scope
+    groups:
+      github-actions:
+        patterns:
+          - "*"
 
   - package-ecosystem: npm
     directory: /
@@ -13,3 +20,6 @@ updates:
       interval: monthly
     labels:
       - dependencies
+    commit-message:
+      prefix: chore
+      include: scope
