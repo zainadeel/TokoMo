@@ -42,8 +42,11 @@ const TOKEN_CSS = [colorsCss, dimensionsCss, typographyCss, effectsCss].join('\n
 function parseVars(css) {
   const lightSection = css.split(':root[data-theme')[0];
   const result = [];
-  for (const [, name, value] of lightSection.matchAll(/^\s*(--[\w-]+)\s*:\s*(.+?)\s*;/gm)) {
-    result.push({ name, value: value.trim() });
+  // Values may span multiple lines (e.g. multi-layer box-shadow composites) —
+  // [\s\S] lets the value match newlines up to its terminating semicolon.
+  for (const [, name, value] of lightSection.matchAll(/^\s*(--[\w-]+)\s*:\s*([\s\S]+?)\s*;/gm)) {
+    // Collapse internal whitespace so multi-line values display cleanly.
+    result.push({ name, value: value.trim().replace(/\s+/g, ' ') });
   }
   return result;
 }
@@ -454,8 +457,6 @@ const FX_GROUPS = [
   ['--effect-animation-easing-',              'easing'],
   ['--effect-motion-',                        'motion'],
   ['--effect-transition-interaction-',        'transition'],
-  ['--effect-shadow-',                        'elevation'],
-  ['--effect-highlight-',                     'elevation'],
   ['--effect-elevation-',                     'elevation'],
   ['--effect-focus-ring',                     'elevation'],
 ];
@@ -467,13 +468,42 @@ function getFxGroup(name) {
   return 'other';
 }
 
-const effects = parseVars(effectsCss).map(({ name, value }) => ({
-  name,
-  group: getFxGroup(name),
-  label: name.slice(2),
-  value,
-  numeric: parseFloat(value) || null,
-}));
+// --effect-shadow-* and --effect-highlight-* are internal CSS sub-parts of the
+// composited elevation styles (inset highlights can't be clipped together with
+// outer shadows, so the composite splits them). They aren't tokens a designer
+// picks — hide them from the docs.
+const effects = parseVars(effectsCss)
+  .filter(({ name }) => !name.startsWith('--effect-shadow-') && !name.startsWith('--effect-highlight-'))
+  .map(({ name, value }) => ({
+    name,
+    group: getFxGroup(name),
+    subgroup: 'style',
+    label: name.slice(2),
+    value,
+    numeric: parseFloat(value) || null,
+  }));
+
+// Elevation atoms — the color primitives that the composite styles are built
+// from. Sourced from colors.css so designers see the same shape as text-styles:
+// atoms on top, composed styles below.
+const elevationAtoms = parseVars(colorsCss)
+  .filter(({ name }) => name === '--color-elevation-shadow' || name === '--color-elevation-highlight')
+  .map(({ name, value }) => ({
+    name,
+    group: 'elevation',
+    subgroup: 'atom',
+    label: name.slice(2),
+    value,
+    numeric: null,
+  }));
+
+// Insert atoms before the first elevation style entry so they render on top.
+const firstElevationIdx = effects.findIndex(t => t.group === 'elevation');
+if (firstElevationIdx === -1) {
+  effects.push(...elevationAtoms);
+} else {
+  effects.splice(firstElevationIdx, 0, ...elevationAtoms);
+}
 
 console.log(`  ✓ effects       (${effects.length} tokens)`);
 
