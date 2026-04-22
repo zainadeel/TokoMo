@@ -288,7 +288,7 @@
     .tok-visual {
       display: flex;
       align-items: center;
-      overflow: hidden;
+      overflow: visible;
     }
 
     /* Name column */
@@ -429,8 +429,32 @@
     .fx-elevation-box {
       width: 32px;
       height: 20px;
+      border-radius: 0;
       background: var(--bg);
       flex-shrink: 0;
+    }
+
+    .fx-swatch {
+      width: 32px;
+      height: 20px;
+      border-radius: 0;
+      flex-shrink: 0;
+      background-color: #fff;
+      background-image:
+        linear-gradient(45deg, rgba(0,0,0,0.08) 25%, transparent 25%),
+        linear-gradient(-45deg, rgba(0,0,0,0.08) 25%, transparent 25%),
+        linear-gradient(45deg, transparent 75%, rgba(0,0,0,0.08) 75%),
+        linear-gradient(-45deg, transparent 75%, rgba(0,0,0,0.08) 75%);
+      background-size: 8px 8px;
+      background-position: 0 0, 0 4px, 4px -4px, -4px 0;
+      box-shadow: inset 0 0 0 1px var(--border);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .fx-swatch-fill {
+      position: absolute;
+      inset: 0;
     }
 
     .fx-easing-label {
@@ -1032,7 +1056,11 @@ function fxVisual(t, maxDuration) {
       return `<div class="fx-blur-box" style="filter:blur(${blurPx}px);opacity:0.6"></div>`;
     }
     case 'elevation': {
-      // Preview box with the actual shadow applied
+      if (t.subgroup === 'atom') {
+        // Color primitive — render as a swatch over a checker so alpha shows.
+        return `<div class="fx-swatch"><div class="fx-swatch-fill" style="background:var(${t.name})"></div></div>`;
+      }
+      // Composite style: preview box with the actual shadow applied.
       return `<div class="fx-elevation-box" style="box-shadow:var(${t.name})"></div>`;
     }
     default:
@@ -1057,7 +1085,7 @@ function fxDisplayValue(t) {
   if (t.group === 'easing') return t.value || '';
   if (t.group === 'blur') return t.value || '';
   if (t.group === 'motion') return t.value || '';
-  if (t.group === 'elevation') return '(multi-layer)';
+  if (t.group === 'elevation') return t.subgroup === 'atom' ? (t.value || '') : '(multi-layer)';
   if (t.group === 'transition') {
     // Shorten verbose transition values
     const short = t.label.replace('transition-interaction-', '').replace('--effect-', '');
