@@ -7,6 +7,13 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ---
 
+## [0.4.2](https://github.com/zainadeel/tokomo/compare/v0.4.1...v0.4.2) (2026-04-22)
+
+
+### Fixed
+
+* raise sub-toolbar height to 48px to match header ([#13](https://github.com/zainadeel/tokomo/issues/13)) ([3e0102b](https://github.com/zainadeel/tokomo/commit/3e0102bf78a13f275e817e8d2f0a497b0e326caf))
+
 ## [0.4.1](https://github.com/zainadeel/tokomo/compare/v0.4.0...v0.4.1) (2026-04-22)
 
 
