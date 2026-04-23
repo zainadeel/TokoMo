@@ -7,9 +7,7 @@ Part of the design system trilogy:
 
 Figma-first: tokens are exported from Figma variables and built into CSS via generator scripts. Drop in new JSON, run the build, everything updates.
 
-<!-- x-release-please-start-version -->
-**Current version: 1.0.0**
-<!-- x-release-please-end-version -->
+[![npm version](https://img.shields.io/npm/v/@ds-mo/tokens.svg)](https://www.npmjs.com/package/@ds-mo/tokens)
 
 ## Install
 
