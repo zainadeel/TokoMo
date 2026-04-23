@@ -7,6 +7,17 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ---
 
+## [2.0.0](https://github.com/zainadeel/tokomo/compare/v1.0.1...v2.0.0) (2026-04-23)
+
+
+### ⚠ BREAKING CHANGES
+
+* **colors:** restructure border colors into strong/bold/medium/faint tiers ([#24](https://github.com/zainadeel/tokomo/issues/24))
+
+### Added
+
+* **colors:** restructure border colors into strong/bold/medium/faint tiers ([#24](https://github.com/zainadeel/tokomo/issues/24)) ([54a1369](https://github.com/zainadeel/tokomo/commit/54a136965d97d728fa008cfa18c4cb9afd56efe5))
+
 ## [1.0.1](https://github.com/zainadeel/tokomo/compare/v1.0.0...v1.0.1) (2026-04-23)
 
 
