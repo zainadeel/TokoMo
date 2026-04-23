@@ -1,4 +1,4 @@
-# Contributing to @tokomo/tokens
+# Contributing to @ds-mo/tokens
 
 Thanks for helping. This is a Figma-first token package — the source of truth lives in Figma variables, and this repo translates them into usable CSS, JSON, and TypeScript.
 
@@ -12,7 +12,7 @@ The `src/json/` directories hold raw Figma variable exports. Generator scripts i
 
 ## Adding or updating tokens from Figma
 
-1. **Export from Figma** — use the Figma Variables Export plugin or the Figma API to export variables as JSON
+1. **Export from Figma** — use the Figma Variables Export plugin or the Figma API to export variables as JSON.
 2. **Drop the JSON** into the appropriate directory:
    - `src/json/colors/semantic/` — semantic color tokens
    - `src/json/colors/reference/` — reference palette
@@ -22,14 +22,10 @@ The `src/json/` directories hold raw Figma variable exports. Generator scripts i
    - `src/json/effects/` — blur, animation timing, easing
 3. **Run the build**:
    ```bash
-   node scripts/build.mjs
+   npm run build
    ```
-4. **Review the diff** in `src/*.css` to confirm the changes look right
-5. **Create a changeset** to document the version bump:
-   ```bash
-   npx changeset
-   ```
-6. Open a PR
+4. **Review the diff** in `src/*.css` to confirm the changes look right.
+5. Open a PR with a conventional-commit title (see below).
 
 ## Naming conventions
 
@@ -43,7 +39,7 @@ If a Figma token is renamed, the CSS token name changes too — **this is a brea
 
 ## What belongs here vs in component packages
 
-**In `@tokomo/tokens`** — pure design primitives:
+**In `@ds-mo/tokens`** — pure design primitives:
 - Any value that multiple components or projects would share
 - Colors, spacing, radius, stroke widths, typography scales, animation timing, elevation shadows
 
@@ -63,25 +59,25 @@ Some tokens cannot be derived from Figma variables (Figma doesn't support multi-
 ## Running the build
 
 ```bash
-node scripts/build.mjs          # full build
-node scripts/build.mjs --watch  # rebuild on file changes
+npm run build          # full build
+npm run dev            # rebuild on file changes
+npm run build:docs     # regenerate the GH Pages token browser
 ```
 
 ## Versioning
 
-This package uses [Changesets](https://github.com/changesets/changesets).
+This package uses [release-please](https://github.com/googleapis/release-please) driven by Conventional Commits. You do not create changeset files — release-please watches commit messages on `main` and opens a release PR automatically.
 
-| Change type | Version bump |
+| Commit type | Version bump |
 |---|---|
-| New tokens added | `minor` |
-| Token renamed or removed | `major` |
-| Value corrected (bug) | `patch` |
-| Docs / comments only | no bump needed |
+| `feat:` | minor |
+| `fix:` / `perf:` | patch |
+| `feat!:` / `BREAKING CHANGE:` | major (minor pre-1.0) |
+| `ci:` / `chore:` / `build:` / `test:` / `style:` / `docs:` / `refactor:` | no release |
 
-```bash
-npx changeset        # create a changeset
-npx changeset version # apply version bumps
-```
+On merge of the release PR, the `publish` job publishes to npm with `--provenance` via OIDC Trusted Publisher — no `npm publish` by hand.
+
+See [AGENTS.md](AGENTS.md) for the full release flow, the `Release-As:` escape hatch, and npm Trusted Publisher setup.
 
 ## Code style
 

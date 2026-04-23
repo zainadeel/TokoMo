@@ -36,10 +36,13 @@ src/
     dark.css           # Dark theme token overrides
   index.css            # Combined barrel import
   json/
-    colors.json        # Figma-exported color token definitions (source of truth)
-    dimensions.json    # Figma-exported dimension token definitions
-    typography.json    # Figma-exported typography token definitions
-    effects.json       # Figma-exported effects token definitions
+    colors/
+      reference/       # Reference palette (source of truth)
+      semantic/        # Semantic color tokens (light + dark)
+      data/            # Data-visualization palettes (light + dark)
+    dimensions/        # Spacing/sizing tokens
+    typography/        # Font family/size/weight/line-height tokens
+    effects/           # Shadow/blur/border-radius tokens
 scripts/
   build.mjs                     # Orchestrates the full build
   generate-color-tokens.mjs     # JSON → colors.css
@@ -239,10 +242,10 @@ Must be done manually by the package owner once:
 
 | Need to change... | Edit this |
 |---|---|
-| Color token values | `src/json/colors.json` |
-| Dimension/spacing values | `src/json/dimensions.json` |
-| Typography values | `src/json/typography.json` |
-| Effects (shadows, radii) | `src/json/effects.json` |
+| Color token values | `src/json/colors/` (reference, semantic, data) |
+| Dimension/spacing values | `src/json/dimensions/` |
+| Typography values | `src/json/typography/` |
+| Effects (shadows, radii) | `src/json/effects/` |
 | Color CSS generation logic | `scripts/generate-color-tokens.mjs` |
 | Build orchestration | `scripts/build.mjs` |
 | TypeScript constant format | `scripts/generate-ts-constants.mjs` |
