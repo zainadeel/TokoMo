@@ -1195,22 +1195,20 @@
       }
     },
     "200": {
-      "$type": "string",
-      "$value": "16",
+      "$type": "number",
+      "$value": 16,
       "$extensions": {
         "com.figma.variableId": "VariableID:18895:836",
-        "com.figma.scopes": ["ALL_SCOPES"],
-        "com.figma.type": "string",
+        "com.figma.scopes": ["GAP"],
         "com.figma.isOverride": true
       }
     },
     "250": {
-      "$type": "string",
-      "$value": "20",
+      "$type": "number",
+      "$value": 20,
       "$extensions": {
         "com.figma.variableId": "VariableID:18895:845",
-        "com.figma.scopes": ["ALL_SCOPES"],
-        "com.figma.type": "string",
+        "com.figma.scopes": ["GAP"],
         "com.figma.isOverride": true
       }
     },
@@ -1356,14 +1354,10 @@
       }
     },
     "tooltip": {
-      "$type": "string",
-      "$value": "750",
+      "$type": "number",
+      "$value": 750,
       "$extensions": {
         "com.figma.variableId": "VariableID:18894:824",
-        "com.figma.scopes": [
-          "ALL_SCOPES"
-        ],
-        "com.figma.type": "string",
         "com.figma.isOverride": true
       }
     }
