@@ -7,6 +7,13 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ---
 
+## [2.4.0](https://github.com/zainadeel/tokomo/compare/v2.3.1...v2.4.0) (2026-04-29)
+
+
+### Added
+
+* **colors:** add active state to interaction tokens ([#38](https://github.com/zainadeel/tokomo/issues/38)) ([561e258](https://github.com/zainadeel/tokomo/commit/561e25873be948095209d04d0674b5b5deca69a1))
+
 ## [2.3.1](https://github.com/zainadeel/tokomo/compare/v2.3.0...v2.3.1) (2026-04-28)
 
 
