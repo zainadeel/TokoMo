@@ -20,6 +20,7 @@
   --dimension-space-400: calc(var(--dimension-space-base) * 4);
   --dimension-space-600: calc(var(--dimension-space-base) * 6);
   --dimension-space-800: calc(var(--dimension-space-base) * 8);
+  --dimension-space-base: var(--dimension-space-base);
   --dimension-space-000: 0;
   --dimension-space-012: calc(var(--dimension-space-base) / 8);
   --dimension-space-025: calc(var(--dimension-space-base) / 4);
@@ -51,6 +52,7 @@
   --dimension-radius-300: calc(var(--dimension-radius-base) * 3);
   --dimension-radius-400: calc(var(--dimension-radius-base) * 4);
   --dimension-radius-600: calc(var(--dimension-radius-base) * 6);
+  --dimension-radius-base: var(--dimension-radius-base);
   --dimension-radius-000: 0;
   --dimension-radius-012: calc(var(--dimension-radius-base) / 8);
   --dimension-radius-025: calc(var(--dimension-radius-base) / 4);
@@ -60,6 +62,7 @@
   --dimension-radius-half: 9999px;
 
   /* Stroke widths — calc() relative to --dimension-stroke-width-base */
+  --dimension-stroke-width-base: var(--dimension-stroke-width-base);
   --dimension-stroke-width-012: calc(var(--dimension-stroke-width-base) / 8);
   --dimension-stroke-width-015: calc(var(--dimension-stroke-width-base) * 5 / 32);
   --dimension-stroke-width-018: calc(var(--dimension-stroke-width-base) * 3 / 16);
@@ -77,6 +80,7 @@
   --dimension-size-500: calc(var(--dimension-size-base) * 5);
   --dimension-size-600: calc(var(--dimension-size-base) * 6);
   --dimension-size-800: calc(var(--dimension-size-base) * 8);
+  --dimension-size-base: var(--dimension-size-base);
   --dimension-size-000: 0;
   --dimension-size-050: calc(var(--dimension-size-base) / 2);
 
@@ -90,20 +94,26 @@
   --dimension-iconography-3xl: calc(var(--dimension-size-base) * 8);
 
   /* Card widths */
+  --dimension-card-width-xs: 300px;
   --dimension-card-width-sm: 400px;
-  --dimension-card-width-md: 600px;
-  --dimension-card-width-lg: 800px;
+  --dimension-card-width-md: 500px;
+  --dimension-card-width-lg: 600px;
 
   /* Modal widths */
+  --dimension-modal-width-xs: 300px;
   --dimension-modal-width-sm: 400px;
-  --dimension-modal-width-md: 600px;
-  --dimension-modal-width-lg: 800px;
+  --dimension-modal-width-md: 500px;
+  --dimension-modal-width-lg: 600px;
+  --dimension-modal-width-xl: 700px;
+  --dimension-modal-width-2xl: 800px;
   --dimension-modal-width-fill: 100%;
 
   /* Form widths */
-  --dimension-form-width-sm: 400px;
-  --dimension-form-width-md: 600px;
-  --dimension-form-width-lg: 800px;
+  --dimension-form-width-xs: 200px;
+  --dimension-form-width-sm: 300px;
+  --dimension-form-width-md: 400px;
+  --dimension-form-width-lg: 500px;
+  --dimension-form-width-xl: 600px;
 
   /* Table column widths */
   --dimension-table-column-width-xs: 100px;
@@ -113,21 +123,24 @@
   --dimension-table-column-width-xl: 500px;
 
   /* Menu widths */
-  --dimension-menu-width-sm: 200px;
+  --dimension-menu-width-xs: 200px;
+  --dimension-menu-width-sm: 300px;
   --dimension-menu-width-md: 400px;
-  --dimension-menu-width-lg: 600px;
+  --dimension-menu-width-lg: 500px;
 
   /* Tooltip widths */
-  --dimension-tooltip-width-sm: 200px;
+  --dimension-tooltip-width-sm: 300px;
   --dimension-tooltip-width-md: 400px;
-  --dimension-tooltip-width-lg: 600px;
+  --dimension-tooltip-width-lg: 500px;
 
   /* Panel widths */
-  --dimension-panel-width-xs: 200px;
-  --dimension-panel-width-sm: 300px;
-  --dimension-panel-width-md: 400px;
-  --dimension-panel-width-lg: 500px;
-  --dimension-panel-width-xl: 600px;
+  --dimension-panel-width-2xs: 200px;
+  --dimension-panel-width-xs: 300px;
+  --dimension-panel-width-sm: 400px;
+  --dimension-panel-width-md: 500px;
+  --dimension-panel-width-lg: 600px;
+  --dimension-panel-width-xl: 700px;
+  --dimension-panel-width-2xl: 800px;
   --dimension-panel-width-fill: 100%;
 
   /* Offset — for transforms and background-position, calc() relative to --dimension-space-base */
@@ -153,7 +166,7 @@
   --dimension-offset-n250: calc(var(--dimension-space-base) * -5 / 2);
 
   /* Scale — unitless multipliers for transform: scale() */
-  --dimension-scale-100: 1;
+  --dimension-scale-default: 1;
   --dimension-scale-subtle: 0.99;
 
   /* Z-index layers */
